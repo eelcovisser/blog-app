@@ -33,6 +33,12 @@ section the first user
 
 section authentication
 
+  define page login() {
+    main{
+      signinoff
+    }
+  }
+
 	define signinoff() {
 		if(loggedIn()) { signoff() } else { signin() }
 	}

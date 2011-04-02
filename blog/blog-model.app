@@ -41,8 +41,8 @@ section posts
 
 	extend entity Blog {
 	  last :: Int (default=0)
-	  function recentPosts(n: Int): List<Post> {
-	    return select p from Post as p where p.blog = ~this order by p.created desc limit n;
+	  function recentPosts(index: Int, n: Int): List<Post> {
+	    return select p from Post as p where p.blog = ~this order by p.created desc limit n*(index-1),n;
 	  }
 	  function addPost(): Post {
 	    last := last + 1;
