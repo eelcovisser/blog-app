@@ -15,6 +15,7 @@ section blog page layout
     }
     define sidebar() {
       searchPosts(b)
+      showLinks(b)
     	recentPosts(b)
     	blogAdmin(b)
     }
@@ -36,6 +37,35 @@ section blog page layout
 
   define link(b: Blog, index: Int) {
     if(b.main) { navigate blog(index) { elements } } else { navigate other(b,index) { elements } }
+  }
+  
+section links
+
+  define showLinks(b: Blog) {
+    <h2>"Links"</h2>
+    output(b.links)
+  }
+  
+section about 
+
+  define about() {
+    aboutBlog(mainBlog())
+  }
+
+  define aboutBlog(b: Blog) {
+    bloglayout(b){
+      output(b.about)
+    }
+  }
+  
+  define contact() {
+    contactBlog(mainBlog())
+  }
+
+  define contactBlog(b: Blog) {
+    bloglayout(b){
+      output(b.contact)
+    }
   }
     
 section search
@@ -75,6 +105,7 @@ section blog front page
       for(p: Post in b.recentPosts(index,5,loggedIn())) { postInList(p) }    
       pageIndex(index, b.postCount(loggedIn()), 5)
     }
+    postCommentCountScript
   }
   
   define newBlog() {
@@ -143,6 +174,9 @@ section posts
   define permalink(p: Post) {
     navigate post(p, p.urlTitle) { elements }
   }
+  function permalink(p: Post): URL {
+    return navigate(post(p, p.urlTitle)); 
+  }
   
   define recentPost(p: Post) {
     permalink(p){ 
@@ -157,13 +191,16 @@ section posts
   }
   
   define page post(p: Post, title: String) {
+    title{ output(p.title) }
     bloglayout(p.blog){
     	placeholder view { postView(p) }
+    	postComments(p)
     }
   }
   
   define postByLine(p: Post) {
     <div class="postByline">
+      if(p.showComments()) { postCommentCount(p) " | " }
       if(!p.public){ "not published | " }
       output(p.created.format("MMMM d, yyyy"))
     </div>
@@ -207,7 +244,56 @@ section posts
       formEntry("Content") { input(p.content) } 
       formEntry("Created") { input(p.created) }
       formEntry("Public") { input(p.public) }
+      formEntry("Comments Allowed") { input(p.commentsAllowed) }
       submit save() { "Save" }
     }
+  }
+  
+access control rules
+
+section comments
+
+  define postComments(p: Post) {
+    var url := permalink(p)
+    var id := p.id
+    if(p.showComments()) {
+	    <div id="disqus_thread"></div>
+	    <script type="text/javascript">
+		    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+		    var disqus_shortname = 'eelcovisser'; // required: replace example with your forum shortname
+		
+		    // The following are highly recommended additional parameters. Remove the slashes in front to use.
+		    var disqus_identifier = '~id';
+		    var disqus_url = '~url';
+		
+		    /* * * DON'T EDIT BELOW THIS LINE * * */
+		    (function() {
+		        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+		        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+		    })();
+		  </script>
+		  <noscript>"Please enable JavaScript to view the " <a href="http://disqus.com/?ref_noscript">"comments powered by Disqus."</a></noscript>
+		  <a href="http://disqus.com" class="dsq-brlink">"blog comments powered by "<span class="logo-disqus">"Disqus"</span></a>
+	  }
+  }
+  
+  define postCommentCount(p: Post) {
+    navigate url(permalink(p) + "#disqus_thread") { "comments" }
+  }
+  
+  define postCommentCountScript() {
+    <script type="text/javascript">
+	    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+	    var disqus_shortname = 'eelcovisser'; // required: replace example with your forum shortname
+	
+	    /* * * DON'T EDIT BELOW THIS LINE * * */
+	    (function () {
+	        var s = document.createElement('script'); s.async = true;
+	        s.type = 'text/javascript';
+	        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+	        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+	    }());
+    </script>
   }
   

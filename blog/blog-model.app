@@ -115,3 +115,15 @@ section posts
       return public || mayEdit();
     }
 	}
+	
+section comments 
+
+  extend entity Post {
+    commentsAllowed :: Bool (default=true)
+    function showComments(): Bool {
+      if(commentsAllowed == null) { commentsAllowed := true; }
+      return public && commentsAllowed;
+    }
+  }
+  
+  
