@@ -1,6 +1,11 @@
 /* ------------------------------
 global styles
 ------------------------------ */
+html {
+  height: 100%;
+  overflow-y: scroll; /* force scrollbar */
+}
+
 body {
 	margin: 0;
 	padding: 0;
@@ -10,6 +15,10 @@ body {
 	color: black;
 	background-color: white;
 } 
+
+/* ------------------------------
+links
+------------------------------ */
 
 a {
 	text-decoration: none;
@@ -35,22 +44,31 @@ a:active {
 	color: darkerblue;
 }
 
+/* ------------------------------
+headers
+------------------------------ */
+
 h1,h2,h3,h4,h5,h6 {
 	margin: 0 0 .5em;
 }
 
+h1 {
+	font-size: 28px;
+}
+
 h2 {
 	color: black;
-	font: 36px;
+	font-size: 24px;
 }
 
 h2 a {
 	text-decoration: none;
+	color: black;
 }
 
 h3 {
 	color: black;
-	font: 30px ;
+	font-size: 22px ;
 }
 
 ul {
@@ -64,6 +82,18 @@ li {
   padding: 0;
 }
 
+/* ------------------------------
+code
+------------------------------ */
+
+pre {
+	background: #eeeeee;
+  margin : 10px;
+  padding : 5px;
+  border : 1px dashed #aaaaaa;
+}
+
+
 
 /* ------------------------------
 post styles
@@ -73,15 +103,34 @@ div.postInList {
 	margin: 0 0 40px 0;
 }
 
-div.postInList h2 {
+div.postInList h1 {
 	margin: 0 0 0 0;
+}
+div.postView h1 {
+  margin: 0 0 0 0;
+}
+div.postInList h1 a {
+	color: black;
+}
+div.postInSearch {
+	margin: 0 0 15px 0;
+}
+div.postInSearch h1 { 
+	 margin: 0 0 0 0;
+	 font-size: 22px;
+}
+div.postInSearch h1 a {
+  color: black;
+}
+div.postInSearch p {
+	margin: 10px 0 0 0;
 }
 
 div.postByline {
 	width : 100%;
 	text-align : right;
 	clear : both;
-	border-top : 1px dashed black
+	border-top : 1px dashed #aaaaaa;
 }
 
 /* ------------------------------
@@ -109,7 +158,7 @@ input.inputString {
 
 textarea {
 	width: 100%;
-	height: 30em;
+	height: 40em;
 }
 
 form {
@@ -260,6 +309,41 @@ menu styles
 	float: right;
 }
 
+/* ------------------------------
+page index
+------------------------------ */
+
+span.pageIndex {
+  display : block;
+  margin-left : auto;
+  margin-right : auto;
+  margin-top : 10px;
+  margin-bottom : 10px;
+}
+span.indexEntryInactive {
+  border : 1px solid #bbbbbb;
+  padding : 4px;
+  margin : 3px;
+  color : #bbbbbb;
+}
+span.indexEntryCurrent {
+  border : 1px solid black;
+  padding : 4px;
+  margin : 3px;
+  background : black;
+  color : white;
+}
+span.indexEntryActive a {
+  border : 1px solid black;
+  padding : 4px;
+  margin : 3px;
+  text-decoration : none;
+  color : #111111;
+}
+span.indexEntryActive a:hover {
+  background : #cccccc;
+}
+
 
 /* ------------------------------
 sidebar styles
@@ -274,12 +358,36 @@ sidebar styles
   /* border-left: 1px dashed gray; */
   background: white;
   margin : 20px 0 0 20px;
+  font-size: 14px;
+}
+
+#sidebar h2 {
+	font-size: 16px;
+	margin: 10px 0 0 0;
 }
 
 #sidebar ul {
-  margin: 20px 0 0 15px;
+  margin: 10px 0 0 0px;
   padding: 0;
   list-style-type: none;
+}
+#sidebar li {
+  margin: 0px 0 5px 0px;
+  padding: 0;
+}
+
+
+/* ------------------------------
+search styles
+------------------------------ */
+
+div.searchPosts {
+	margin: 0 0 20px 0;
+}
+
+div.searchPosts input.inputString {
+	width: 150px;
+	margin: 0 10px 0 0;
 }
 
 

@@ -53,3 +53,13 @@ section authentication
 	define signoff() {
 		form{ submit action{ logout(); }{ "Sign Off" } }
 	}
+
+section access denied
+
+  define page accessDenied() {
+    init{ 
+      message("That page does not exist, or you don't have permission to access it.");
+      return root();
+    }
+  }
+  
