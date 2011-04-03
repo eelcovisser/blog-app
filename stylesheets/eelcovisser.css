@@ -130,7 +130,36 @@ div.postByline {
 	width : 100%;
 	text-align : right;
 	clear : both;
+	padding : 2px 0 0 0;
+	margin : 2px 0 0 0; 
 	border-top : 1px dashed #aaaaaa;
+}
+
+/* ------------------------------
+forms
+------------------------------ */
+
+textarea {
+  width: 100%;
+  height: 40em;
+}
+
+form {
+  display: inline;
+}
+
+div.formentry {
+	margin: 0 0 20px 0; 
+	}
+	span.formentrylabel {
+	  display: block;
+	  margin: 0 0 3px 0;
+	}
+
+div#disqus_thread {
+	border-top : 1px dashed #444444;
+	margin : 60px 0 0 0;
+	padding : 30px 0 0 0;
 }
 
 /* ------------------------------
@@ -154,15 +183,6 @@ span.editLink a {
 
 input.inputString {
   width: 100%;
-}
-
-textarea {
-	width: 100%;
-	height: 40em;
-}
-
-form {
-	display: inline;
 }
 
 h1.header {
@@ -343,6 +363,11 @@ span.indexEntryActive a {
 span.indexEntryActive a:hover {
   background : #cccccc;
 }
+
+/* ------------------------------
+forms
+------------------------------ */
+
 
 
 /* ------------------------------
