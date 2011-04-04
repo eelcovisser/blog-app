@@ -17,9 +17,11 @@ imports lib/pageindex
         if(loggedIn()) { includeWiki("adminSidebar") }
       }
     }
+    <div id="wiki">
     main{
       elements
     }
+    </div>
   }
 
 section search 

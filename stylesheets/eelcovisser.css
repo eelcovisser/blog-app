@@ -48,17 +48,15 @@ a:active {
 headers
 ------------------------------ */
 
-h1,h2,h3,h4,h5,h6 {
-	margin: 0 0 .5em;
-}
-
 h1 {
-	font-size: 28px;
+	font-size: 24px;
+  margin: 0 0 20px;
 }
 
 h2 {
 	color: black;
-	font-size: 24px;
+	font-size: 20px;
+  margin: 20px 0 10px;
 }
 
 h2 a {
@@ -68,7 +66,8 @@ h2 a {
 
 h3 {
 	color: black;
-	font-size: 22px ;
+	font-size: 16px ;
+  margin: 20px 0 10px;
 }
 
 ul {
@@ -244,8 +243,6 @@ input.button:hover {
   background : -moz-linear-gradient(center bottom, #aaaaaa 10%, #efefef 80%);
 }
 
-
-
 div.formentry {
 	margin: 0 0 20px 0; 
 	}
@@ -352,7 +349,7 @@ header styles
 
 div.title {
 	font-size: 200%;
-	padding: 20px;
+	padding: 20px 0 20px 0;
 }
 div.title a {
 	color: white;
@@ -437,21 +434,25 @@ menu styles
 
 div.signinoff {
 	position: absolute;
-	bottom : 10px;
-	right : 10px;
-	color : #666666;
+	bottom : 0px;
+	right : 0px;
+	color : #999999;
 	font-size : 12px;
 }
 div.signinoff a{
-	color : #666666;
+	color : #999999;
 }
 div.signinoff input.inputString{
-	width : 20em;
+	width : 15em;
 	font-size : 9px;
 }
 div.signinoff input.inputSecret{
-  width : 20em;
+  width : 15em;
   font-size : 9px;
+}
+div.signinoff input.button {
+	margin: 0 0 0 0;
+	color: #999999;
 }
 
 /* ------------------------------
@@ -488,12 +489,6 @@ span.indexEntryInactive, span.indexEntryCurrent, span.indexEntryActive a {
 }
 
 /* ------------------------------
-
------------------------------- */
-
-
-
-/* ------------------------------
 sidebar styles
 ------------------------------ */
 
@@ -511,11 +506,12 @@ sidebar styles
 
 #sidebar h2 {
 	font-size: 16px;
-	margin: 10px 0 0 0;
+	margin: 15px 0 5px 0;
+	border-bottom: 1px dashed #aaaaaa;
 }
 
 #sidebar ul {
-  margin: 10px 0 0 0px;
+  margin: 0px 0 0 0px;
   padding: 0;
   list-style-type: none;
 }
@@ -523,6 +519,24 @@ sidebar styles
   margin: 0px 0 5px 0px;
   padding: 0;
 }
+
+#wiki #sidebar {
+	 float: left;
+	 margin: 20px 10px 0 0;
+	 padding: 0 0 0 0px;
+}
+#wiki #container {
+}
+#wiki #contents {
+	margin : 20px 0 0 0 ;
+	padding : 0 0 0 10px;
+	width: 742px;
+}
+
+#sidebar h1 { font-size: 18px; }
+#sidebar h2 { font-size: 16px; }
+#sidebar h3 { font-size: 14px; }
+#sidebar h4 { font-size: 14px; }
 
 
 /* ------------------------------
@@ -544,15 +558,20 @@ contents styles
 ------------------------------ */
 #contents {
 	float: left;
-	width: 700px;
+	width: 720px;
 	background: white;
-	margin: 20px 0px 0 2px;
-	padding: 10px 18px 10px 18px;
+	margin: 20px 0px 0 0px;
+	padding: 10px 18px 10px 0px;
   /* -moz-box-shadow: 0 0 4px rgba(0,0,0,0.3);
   box-shadow: 0 0 4px rgba(0,0,0,0.2); */
   /* border : 1px solid gray; */
   background : white;
   border-right: 1px solid black;
+}
+
+#wiki #contents {
+	border-right : 0;
+	border-left: 1px solid black;
 }
  
 #contents p {
