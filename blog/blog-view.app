@@ -20,7 +20,7 @@ section blog page layout
           listitem{ navigate about() { "About" } }
           listitem{ navigate contact() { "Contact" } }
           listitem{ navigate index(1) { "Index" } }
-          listitem{ navigate feed() { "RSS" } }
+          listitem{ navigate feed("blog") { "RSS" } }
         }
       }
       showLinks(b)
@@ -122,8 +122,11 @@ section blog table of contents
   
 section blog rss
 
-  define page feed() {
-  	blogrss(mainBlog())
+  define page feed(type: String) {
+    case(type) {
+  	  "blog" { blogrss(mainBlog()) }
+  	  "wiki" { wikifeed() }
+  	}
   }
 
   define blogrss(b: Blog) {

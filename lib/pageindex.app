@@ -5,6 +5,7 @@ module lib/pageindex
   }
   
   define pageIndex(index : Int, count : Int, perpage : Int) {
+    
     var pages : Int := 1 + count/perpage
     container[class="pageIndex"] {
 	    if(pages > 1) { 

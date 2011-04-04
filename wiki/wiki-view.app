@@ -5,13 +5,34 @@ imports wiki/wiki-model
 // todo: comments
 // todo: attachments
 // todo: rss feed
-// todo: mark wiki page as blog post
+
+access control rules
+
+  rule page admin() { loggedIn() }
+  
+section application
+
+  define page root(){
+    title { output(application.title) }
+    wikilayout() { showWiki("frontpage") }
+  }
+  
+  define page admin() {
+    main{
+      form{
+        formEntry("Title"){ input(application.title) }
+        formEntry("Footer"){ input(application.footer) }
+        submit action{ } { "Save" }
+      }
+    }
+  }
 
 imports lib/pageindex
 
   define wikilayout() {
     define sidebar() {
-      searchWiki()      
+      searchWiki()
+      navigate feed("wiki") { "RSS" }
       sidebarSection{
         includeWiki("sidebar")
         if(loggedIn()) { includeWiki("adminSidebar") }
@@ -47,6 +68,22 @@ section search
     output(w.title)
     output(abbreviate(w.content,200))
   }
+
+section wiki rss
+
+  define wikifeed() {
+    rssWrapper(application.title, navigate(root())){
+      for(w: Wiki in recentlyModifiedPages(1,20,false)) {
+        <item> 
+          <title>output(w.title)</title>
+          <link>output(link(w))</link>
+          <description>output(abbreviate(w.content,500))</description>
+          <guid>output(link(w))</guid>
+          <pubDate>output(w.modified)</pubDate>
+       </item> 
+      }
+    }
+  }
   
 access control rules
 
@@ -68,6 +105,9 @@ section wiki
     }
   }
   
+  function link(w : Wiki): String {
+    return navigate(wiki(w.key));
+  }
   define output(w : Wiki) {
     navigate wiki(w.key) {
       if(w.title == "") { output(w.key) } else { output(w.title) }
