@@ -169,6 +169,18 @@ div.postActions a {
 }
 
 /* ------------------------------
+wiki
+------------------------------ */
+
+div.byline {
+	margin : 30px 0 30px 0;
+	padding : 5px 0 0 0;
+	border-top : 1px dashed #aaaaaa;
+	font-size : 14px;
+}
+
+
+/* ------------------------------
 forms
 ------------------------------ */
 
@@ -180,6 +192,59 @@ textarea {
 form {
   display: inline;
 }
+
+select {
+  border : 1px solid #cccccc;
+  padding : 1px;
+}
+textarea { 
+  border : 1px solid #cccccc;
+  padding : 3px;
+  margin-bottom : .5em;
+}
+input { 
+  border : 1px solid #cccccc;
+  padding : 3px;
+  margin-right : .5em;
+  margin-bottom : .5em;
+}
+textarea:focus { 
+  border : 1px solid #444444;
+  background : #eeeeee;
+}
+input:focus { 
+  border : 1px solid #444444;
+  background : #eeeeee;
+}
+input:hover{  
+  background : #eeeeee;
+}
+textarea:hover{ 
+  background : #eeeeee;
+}
+
+input.button { 
+  border : 1px solid #aaaaaa;
+  height : auto;
+  line-height: 1em;
+  vertical-align: center;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background : -webkit-gradient(linear, left bottom, left top, color-stop(0.10,#dddddd), color-stop(0.80, #efefef) );
+  background : -moz-linear-gradient(center bottom, #dddddd 10%, #efefef 80%);
+}
+input.button:active {
+  background : -webkit-gradient(linear, left bottom, left top, color-stop(0.10,#efefef), color-stop(0.80, #dddddd) );
+  background : -moz-linear-gradient(center bottom, #efefef 10%, #dddddd 80%);
+}
+input.button:hover { 
+  background : #aaaaaa;
+  background : -webkit-gradient(linear, left bottom, left top, color-stop(0.10,#aaaaaa), color-stop(0.80, #efefef) );
+  background : -moz-linear-gradient(center bottom, #aaaaaa 10%, #efefef 80%);
+}
+
+
 
 div.formentry {
 	margin: 0 0 20px 0; 
@@ -199,19 +264,31 @@ div#disqus_thread {
 editable style
 ------------------------------ */
 
-span.editLink {
-	float: right;
+div.editableText, div.editableString, div.editableURL {
+	position: relative;
+	clear: both;
+	min-height : 10px;
+}
+
+div.editLink {
+	position: absolute;
+	top : 0;
+	right : 10px;
   font-size: 12px;
 }
 
-span.editLink a {
+div.editLink a {
   text-decoration: none;
-  color: #eeeeee;
+  color: #ffffff;
 }
 
-span.editLink a {
+div.editableText:hover div.editLink a {
 	text-decoration: none;
-	color: #aaaaaa;
+	color: #444444;
+}
+div.editableString:hover div.editLink a {
+  text-decoration: none;
+  color: #444444;
 }
 
 input.inputString {
@@ -358,8 +435,23 @@ menu styles
 	list-style-type: none;
 }
 
-#signinoff {
-	float: right;
+div.signinoff {
+	position: absolute;
+	bottom : 10px;
+	right : 10px;
+	color : #666666;
+	font-size : 12px;
+}
+div.signinoff a{
+	color : #666666;
+}
+div.signinoff input.inputString{
+	width : 20em;
+	font-size : 9px;
+}
+div.signinoff input.inputSecret{
+  width : 20em;
+  font-size : 9px;
 }
 
 /* ------------------------------

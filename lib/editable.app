@@ -29,17 +29,19 @@ access control rules
   
 section editable text
 
-  define span ajax editableText(text : Ref<WikiText>) {
-    placeholder showText{ showWikiText(text) }
+  define ajax editableText(text : Ref<WikiText>) {
+    block[class="editableText"] {
+	    placeholder showText{ showWikiText(text) }
+    }
   }
   
-  define span ajax showWikiText(text : Ref<WikiText>) {
+  define ajax showWikiText(text : Ref<WikiText>) {
     action edit(){ replace(showText, editWikiText(text)); }
-    container[class="showWikiTextEdit"]{ submitlink edit() { "[edit]" } }
+    block[class="showWikiTextEdit editLink"]{ submitlink edit() { "[edit]" } }
     output(text)
   }
   
-  define span ajax editWikiText(text : Ref<WikiText>) {
+  define ajax editWikiText(text : Ref<WikiText>) {
     form{ 
       input(text) 
       submit action{ modified(text.getEntity()); replace(showText, showWikiText(text)); }{ "Save" }
@@ -64,17 +66,19 @@ access control rules
 
 section editable strings
 
-  define span ajax editableString(x : Ref<String>) {
-    placeholder showString{ showString(x) }
+  define ajax editableString(x : Ref<String>) {
+    block[class="editableString"]{
+      placeholder showString{ showString(x) }
+    }
   }
   
-  define span ajax showString(x : Ref<String>) {
+  define ajax showString(x : Ref<String>) {
     action edit(){ replace(showString, editString(x)); }
     output(x) " "
-    container[class="showString"]{ submitlink edit() { "[edit]" } }
+    block[class="showString editLink"]{ submitlink edit() { "[edit]" } }
   }
   
-  define span ajax editString(x : Ref<String>) {
+  define ajax editString(x : Ref<String>) {
     action save() { modified(x.getEntity()); replace(showString, showString(x)); }
     action cancel() { replace(showString, showString(x)); }
     form{ input(x) " " submit save() { "Save" } " " }
@@ -96,7 +100,7 @@ access control rules
   
 section editable URLs
 
-  define span ajax editableURL(x : Ref<URL>) {
+  define ajax editableURL(x : Ref<URL>) {
     placeholder showURL{ 
       if(x == null && mayEdit(x.getEntity())) {
         editURL(x)
@@ -106,13 +110,13 @@ section editable URLs
     }
   }
   
-  define span ajax showURL(x : Ref<URL>) {
+  define ajax showURL(x : Ref<URL>) {
     action edit(){ replace(showURL, editURL(x)); }
     output(x) " "
-    container[class="showURL"]{ submitlink edit() { "[edit]" } }
+    block[class="showURL editLink"]{ submitlink edit() { "[edit]" } }
   }
   
-  define span ajax editURL(x : Ref<URL>) {
+  define ajax editURL(x : Ref<URL>) {
     form{ 
       input(x) 
       submit action{ modified(x.getEntity()); replace(showURL, showURL(x)); }{ "Save" }
@@ -132,11 +136,11 @@ access control rules
   
 section editable Bools
 
-  define span ajax editableBool(x : Ref<Bool>) {
+  define ajax editableBool(x : Ref<Bool>) {
     placeholder showBool{ showBool(x) }
   }
     
-  define span ajax showBool(x : Ref<Bool>) {
+  define ajax showBool(x : Ref<Bool>) {
     action toggle() { x := !x; replace(showBool, showBool(x)); }
     form{ input(x)[onclick:=toggle()] }
   }

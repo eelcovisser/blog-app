@@ -21,20 +21,21 @@ section main template
     <div id="footercontainer">
       <div id="footercontent">
         <div id="footer">pagefooter</div>
+        signinoff
       </div>
     </div>
   }
   
   define pageheader() {
     <div class="title">
-      navigate root(){ "Domain-Specific Language Engineering" } 
+      navigate root(){ output(application.title) } 
     </div>
   }
   
   define copyright() { rawoutput{ "&copyright;" } }
   
   define pagefooter() { 
-    "Copyright 2011 Eelco Visser"
+    output(application.footer)
   }
   
   define sidebar() {

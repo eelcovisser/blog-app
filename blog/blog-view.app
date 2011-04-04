@@ -228,6 +228,9 @@ section posts
   function permalink(p: Post): URL {
     return navigate(post(p, p.urlTitle)); 
   }
+  function plainLink(p: Post): URL {
+    return navigate(post(p, "")); 
+  }
   
   define recentPost(p: Post) {
     permalink(p){ 
@@ -343,7 +346,7 @@ section posts
 section comments
 
   define postComments(p: Post) {
-    var url := permalink(p)
+    var url := plainLink(p)
     var id := p.id
     if(p.publicComments()) {
 	    <div id="disqus_thread"></div>

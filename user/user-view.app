@@ -7,7 +7,7 @@ section user profile
   define output(u: User) {
     output(u.fullname)
   }
-
+ 
 	define page user(u: User) {
 	  main{
 	    output(u.fullname)
@@ -33,14 +33,10 @@ section the first user
 
 section authentication
 
-  define page login() {
-    main{
-      signinoff
-    }
-  }
-
 	define signinoff() {
-		if(loggedIn()) { signoff() } else { signin() }
+		<div class="signinoff">
+		  if(loggedIn()) { signoff() } else { signin() }
+		</div>
 	}
 	define signin() {
 		var n: String
@@ -51,7 +47,7 @@ section authentication
 		}
 	}
 	define signoff() {
-		form{ submit action{ logout(); }{ "Sign Off" } }
+		"Signed as " output(principal()) " | " form{ submitlink action{ logout(); }{ "[Sign Off]" } }
 	}
 
 section access denied
