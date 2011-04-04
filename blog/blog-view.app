@@ -14,7 +14,15 @@ section blog page layout
       <div class="title">link(b){ output(b.title) }</div>
     }
     define sidebar() {
-      searchPosts(b)
+      searchPosts(b)      
+      sidebarSection{
+        list{
+          listitem{ navigate about() { "About" } }
+          listitem{ navigate contact() { "Contact" } }
+          listitem{ navigate index(1) { "Index" } }
+          listitem{ navigate feed() { "RSS" } }
+        }
+      }
       showLinks(b)
     	recentPosts(b)
     	blogAdmin(b)
@@ -38,6 +46,9 @@ section blog page layout
   define link(b: Blog, index: Int) {
     if(b.main) { navigate blog(index) { elements } } else { navigate other(b,index) { elements } }
   }
+  function link(b: Blog, index: Int): String {
+    if(b.main) { return navigate(blog(index)); } else { return navigate(other(b,index)); }
+  }
   
 section links
 
@@ -48,22 +59,26 @@ section links
   
 section about 
 
-  define about() {
+  define page about() {
     aboutBlog(mainBlog())
   }
 
   define aboutBlog(b: Blog) {
+    title{ "About " output(b.title)}
     bloglayout(b){
+      <h1>"About"</h1>
       output(b.about)
     }
   }
   
-  define contact() {
+  define page contact() {
     contactBlog(mainBlog())
   }
 
-  define contactBlog(b: Blog) {
+  define contactBlog(b: Blog) {    
+    title{ "Contact " output(b.title)}
     bloglayout(b){
+      <h1>"Contact"</h1>
       output(b.contact)
     }
   }
@@ -85,10 +100,48 @@ section search
   	bloglayout(b){ 
   		for(p: Post in searchPost(query,30)) { postInSearch(p) }
   	}
+    postCommentCountScript
+  }
+  
+section blog table of contents
+
+  define page index(index: Int) {
+    indexBlog(mainBlog(),index)
+  }
+  
+  define indexBlog(b: Blog, index: Int) {
+  	title{ "Index " output(b.title) }
+    define pageIndexLink(i: Int, lab: String) { navigate index(i) { output(lab) } }
+    bloglayout(b){
+      <h1>"Index"</h1>
+      for(p: Post in b.recentPosts(index, 10, loggedIn())) { postInIndex(p) }
+      pageIndex(index, b.postCount(loggedIn()), 10)
+    }
+    postCommentCountScript
+  }
+  
+section blog rss
+
+  define page feed() {
+  	blogrss(mainBlog())
+  }
+
+  define blogrss(b: Blog) {
+  	rssWrapper(b.title, link(b,1)){
+  		for(p: Post in b.recentPosts(1,20,false)) {
+  	    <item> 
+          <title>output(p.title)</title>
+          <link>output(permalink(p))</link>
+          <description>output(abbreviate(p.content,500))</description>
+          <guid>output(permalink(p))</guid>
+          <pubDate>output(p.created)</pubDate>
+       </item>
+  		}
+  	}
   }
 
 section blog front page
-
+ 
   define page blog(index: Int) {
     blog(mainBlog(), index)
   }
@@ -163,10 +216,8 @@ access control rules
   rule template newPost(b: Blog) { loggedIn() }
   rule template postInSearch(p: Post) { p.mayView() }
   rule template postInList(p: Post) { p.mayView() }
-  rule ajaxtemplate postView(p: Post) { 
-    p.mayView()
-    rule action edit(){ p.mayEdit() }
-  }
+  rule ajaxtemplate postView(p: Post) {  p.mayView() }
+  rule ajaxtemplate postActions(p: Post) { p.mayEdit() }
   rule ajaxtemplate postEdit(p: Post) { p.mayEdit() }
   
 section posts
@@ -196,18 +247,26 @@ section posts
     	placeholder view { postView(p) }
     	postComments(p)
     }
+    postCommentCountScript
   }
   
   define postByLine(p: Post) {
     <div class="postByline">
-      if(p.showComments()) { postCommentCount(p) " | " }
+      if(p.publicComments()) { <span class="comments">postCommentCount(p) </span> }
       if(!p.public){ "not published | " }
-      output(p.created.format("MMMM d, yyyy"))
+      <span class="date">output(p.created.format("MMMM d, yyyy"))</span>
     </div>
   }
   
   define postContent(p: Post) {
     <div class="postContent">output(p.content)</div>
+  }
+  
+  define postInIndex(p: Post) {
+    <div class="postInIndex">
+      <h1>permalink(p){ output(p.title) }</h1>
+      postByLine(p)
+    </div>
   }
   
   define postInSearch(p: Post) {
@@ -228,35 +287,65 @@ section posts
   }
 
   define ajax postView(p: Post) {
-    action edit() { replace(view, postEdit(p)); }
     <div class="postView">
 	    <h1>output(p.title)</h1>
 	    postByLine(p)
-	    postContent(p)
-	    submitlink edit() { "[Edit]" }
+	    postContent(p) 
+	    postActions(p)
+	  </div>
+  }
+  
+  define postActions(p: Post) {    
+  	action edit() { replace(view, postEdit(p)); }
+    action remove() { var b := p.blog; if(p.remove()) { return other(b,1); } }
+    action withdraw() { p.withdraw(); }
+    action publish() { p.publish(); }
+    action undelete() { p.undelete(); }
+    action showComments() { p.showComments1(); }
+    action hideComments() { p.hideComments(); }
+    <div class="postActions">
+	  	submitlink edit() { "[Edit]" } 
+	  	" "
+	    if(p.public()) { 
+	    	submitlink withdraw() { "[Withdraw]" } " "
+	    	if(p.publicComments()){ 
+	    		submitlink hideComments() { "[Hide Comments]" }
+	    	} else {
+	        submitlink showComments() { "[Show Comments]" }
+	    	}
+	    } else { 
+	    	submitlink publish() { "[Publish]" }
+	      " "
+	      if(p.deleted()) { 
+	        submitlink undelete() { "[Undelete]" } " "
+		    	submitlink remove() { "[Permanently Delete]" } 
+		    } else {
+		    	submitlink remove() { "[Delete]" }
+		    }
+		  }
 	  </div>
   }
   
   define ajax postEdit(p: Post) {
     action save() { p.modified(); replace(view, postView(p)); }
-    form{
-      formEntry("Title") { input(p.title) }
-      formEntry("Content") { input(p.content) } 
-      formEntry("Created") { input(p.created) }
-      formEntry("Public") { input(p.public) }
-      formEntry("Comments Allowed") { input(p.commentsAllowed) }
-      submit save() { "Save" }
-    }
+    <div class="postView">
+      <h1>output(p.title)</h1>
+      postByLine(p)
+	    form{
+	      formEntry("Title") { input(p.title) }
+	      formEntry("Content") { input(p.content) } 
+	      formEntry("Created") { input(p.created) }
+	      submit save() { "Save" }
+	    }
+	  </div>
   }
-  
-access control rules
-
+ 
 section comments
 
   define postComments(p: Post) {
     var url := permalink(p)
     var id := p.id
-    if(p.showComments()) {
+    if(p.publicComments()) {
 	    <div id="disqus_thread"></div>
 	    <script type="text/javascript">
 		    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */

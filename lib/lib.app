@@ -9,6 +9,7 @@ imports lib/markup
 imports lib/editable
 imports lib/coordinates
 imports lib/modal-dialog
+imports lib/rss
 
 section ajax lib
 

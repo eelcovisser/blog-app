@@ -96,8 +96,9 @@ section posts
 		public    :: Bool (default=false)
 		created   :: DateTime (default=now())
 		modified  :: DateTime (default=now())
+		deleted   :: Bool (default=false)
 		author    -> User
-		    
+
 		extend function setTitle(x: String) {
 		  urlTitle := keyFromName(x);
 		}
@@ -114,13 +115,46 @@ section posts
       if(public == null) { public := false; }
       return public || mayEdit();
     }
+    function public(): Bool { 
+    	if(public == null) { public := false; } return public; 
+    }
+    function publish() { 
+    	public := true; 
+    	deleted := false;
+    	created := now();
+    }
+    function withdraw() { 
+    	public := false; 
+    }
+    function deleted(): Bool { 
+    	if(deleted == null) { deleted := false; } return deleted; 
+    }
+    function undelete() {
+    	deleted := false;
+    }
+    function remove(): Bool {
+    	if(deleted()) {
+    		this.delete();
+    		return true;
+    	} else { 
+    		deleted := true;
+    	  public := false;
+    	  return false;
+    	}
+    }
 	}
 	
 section comments 
 
   extend entity Post {
     commentsAllowed :: Bool (default=true)
-    function showComments(): Bool {
+    function showComments1() {
+    	commentsAllowed := true;
+    }    
+    function hideComments() {
+      commentsAllowed := false;
+    }
+    function publicComments(): Bool {
       if(commentsAllowed == null) { commentsAllowed := true; }
       return public && commentsAllowed;
     }

@@ -112,6 +112,7 @@ div.postView h1 {
 div.postInList h1 a {
 	color: black;
 }
+
 div.postInSearch {
 	margin: 0 0 15px 0;
 }
@@ -126,6 +127,23 @@ div.postInSearch p {
 	margin: 10px 0 0 0;
 }
 
+div.postInIndex {
+  margin: 0 0 10px 0;
+}
+div.postInIndex h1 { 
+   margin: 0 0 0 0;
+   font-size: 18px;
+}
+div.postInIndex h1 a {
+  color: black;
+}
+div.postInIndex div.postByline {
+	font-size: 12px
+}
+div.postInIndex div.postByline span.date {
+	font-size: 12px;
+}
+
 div.postByline {
 	width : 100%;
 	text-align : right;
@@ -133,6 +151,21 @@ div.postByline {
 	padding : 2px 0 0 0;
 	margin : 2px 0 0 0; 
 	border-top : 1px dashed #aaaaaa;
+	font-size : 16px;
+}
+div.postByline a {
+	color: black;
+}
+div.postByline span.comments {
+  font-size: 12px;
+  float: left
+}
+div.postByline span.date {
+	font-size: 18px;
+}
+
+div.postActions a {
+	color: black;
 }
 
 /* ------------------------------
@@ -337,35 +370,33 @@ span.pageIndex {
   display : block;
   margin-left : auto;
   margin-right : auto;
-  margin-top : 10px;
-  margin-bottom : 10px;
+  margin-top : 30px;
+  margin-bottom : 20px;
 }
 span.indexEntryInactive {
   border : 1px solid #bbbbbb;
-  padding : 4px;
-  margin : 3px;
   color : #bbbbbb;
 }
-span.indexEntryCurrent {
-  border : 1px solid black;
-  padding : 4px;
-  margin : 3px;
-  background : black;
+span.indexEntryCurrent {   
+	border : 1px solid black; 
+	background : black;
   color : white;
 }
-span.indexEntryActive a {
-  border : 1px solid black;
-  padding : 4px;
-  margin : 3px;
+span.indexEntryActive a {  
+	border : 1px solid black;
   text-decoration : none;
   color : #111111;
 }
 span.indexEntryActive a:hover {
   background : #cccccc;
 }
+span.indexEntryInactive, span.indexEntryCurrent, span.indexEntryActive a {
+  padding : 4px;
+  margin : 0 6px 0 0;
+}
 
 /* ------------------------------
-forms
+
 ------------------------------ */
 
 
