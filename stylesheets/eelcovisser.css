@@ -178,6 +178,9 @@ div.byline {
 	font-size : 14px;
 }
 
+div.wikiActions a {
+  color: black;
+}
 
 /* ------------------------------
 forms
@@ -433,21 +436,23 @@ menu styles
 }
 
 div.signinoff {
-	position: absolute;
+	/*position: absolute;
 	bottom : 0px;
-	right : 0px;
+	right : 0px; */
+	float: right;
 	color : #999999;
 	font-size : 12px;
+	margin: 12px 0 12px 0;
 }
 div.signinoff a{
 	color : #999999;
 }
 div.signinoff input.inputString{
-	width : 15em;
+	width : 10em;
 	font-size : 9px;
 }
 div.signinoff input.inputSecret{
-  width : 15em;
+  width : 10em;
   font-size : 9px;
 }
 div.signinoff input.button {
@@ -617,6 +622,6 @@ footer styles
 }
 
 #footer {
-  padding : 20px;
+  padding : 20px 0 20px 0;
   color : black;
 }

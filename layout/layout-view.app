@@ -20,8 +20,7 @@ section main template
     </div>
     <div id="footercontainer">
       <div id="footercontent">
-        <div id="footer">pagefooter</div>
-        signinoff
+        <div id="footer">signinoff pagefooter</div>
       </div>
     </div>
   }

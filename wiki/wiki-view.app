@@ -4,7 +4,6 @@ imports wiki/wiki-model
 
 // todo: comments
 // todo: attachments
-// todo: rss feed
 
 access control rules
 
@@ -14,14 +13,15 @@ section application
 
   define page root(){
     title { output(application.title) }
-    wikilayout() { showWiki("frontpage") }
+    wikilayout() { includeWiki("frontpage") }
   }
   
   define page admin() {
     main{
       form{
-        formEntry("Title"){ input(application.title) }
-        formEntry("Footer"){ input(application.footer) }
+        formEntry("Title"  ){ input(application.title)  }
+        formEntry("Footer" ){ input(application.footer) }
+        formEntry("Email"  ){ input(application.email)  }
         submit action{ } { "Save" }
       }
     }
@@ -49,7 +49,7 @@ section search
 
   define searchWiki() {
     var query: String
-    action search() { if(query != "") { return wikisearch(query); } }
+    action search() { if(query != "") { return wikisearch(query,1); } }
     <div class="searchPosts">
       form{
         input(query)
@@ -58,15 +58,23 @@ section search
     </div>    
   }
 
-  define page wikisearch(query: String) {
+  define page wikisearch(query: String, index: Int) {
+    var idx := max(1,index)
+    title{ output(application.title) " | search" } 
+    // todo pagination   
+    //define pageIndexLink(i: Int, lab: String) { navigate index(i) { output(lab) } }
     wikilayout{ 
-      for(w: Wiki in searchWiki(query,30)) { wikiInSearch(w) }
+      <h1>"Search Results for '" output(query) "'"</h1>
+      for(w: Wiki in searchWiki(query, 30, 30*(idx-1))) { wikiInSearch(w) }
+      //pageIndex(index, b.postCount(loggedIn()), 10)
     }
   }
   
   define wikiInSearch(w: Wiki) {
-    output(w.title)
-    output(abbreviate(w.content,200))
+    <div class="wikiInSearch">
+      <h2>output(w)</h2>
+      <div class="content">output(abbreviate(w.content,200))</div>
+    </div>
   }
 
 section wiki rss
@@ -87,86 +95,113 @@ section wiki rss
   
 access control rules
 
-  rule template showWiki(key : String) { true }
-  rule template showWiki(w : Wiki) { true } 
+  rule template showWiki(w : Wiki) { w.mayView() } 
   rule template unknownWiki(key : String) { 
     true
     rule action create() { loggedIn() }
   }
   rule page wiki(key : String) { true }
-  rule page pageindex() { loggedIn() } 
+  rule page pageindex() { loggedIn() }
+  
+  rule ajaxtemplate showWiki(w: Wiki) { true }
+  rule ajaxtemplate editWiki(w: Wiki)  { loggedIn() }
+  rule template wikiActions(w: Wiki) { loggedIn() }
   
 section wiki
 
   define page wiki(key : String) {
-    wikilayout{
-      showWiki(key)
-      byLine(key)
-    }
-  }
-  
-  function link(w : Wiki): String {
-    return navigate(wiki(w.key));
-  }
-  define output(w : Wiki) {
-    navigate wiki(w.key) {
-      if(w.title == "") { output(w.key) } else { output(w.title) }
-    }
-  }
-  
-  define showWiki(key : String) {
     var w := findWiki(key)
-    if(w == null) {
-      unknownWiki(key)
-    } else {
-      showWiki(w)
+    title{ output(wikiTitle(key)) }
+    wikilayout{
+      placeholder view{
+        if(w == null) {
+          unknownWiki(key)
+        } else {
+          showWiki(w)
+        }
+      }
     }
+  }
+
+  define ajax showWiki(w : Wiki) { 
+    <h1>output(w.title)</h1>
+    output(w.content)          
+    byLine(w)
+    wikiActions(w)
   }
   
   define includeWiki(key: String) {
-    var w := findWiki(key)
-    block[class="editableText"] {
-      if(loggedIn()) { block[class="editLink"]{ navigate wiki(key) { "[edit]" } } }
-      if(w != null) { output(w.content) }
+    var w := findCreateWiki(key);
+    if(w != null) { output(w.content) }
+  }
+
+  define ajax editWiki(w: Wiki) {
+    action save() { 
+      w.modified();
+      replace(view, showWiki(w)); 
+    }
+    form{
+      formEntry("Key"){ input(w.key) }
+      formEntry("Title"){ input(w.title) }
+      formEntry("Text"){ input(w.content) }
+      submit save() { "Save" }
     }
   }
 
-  define showWiki(w : Wiki) { 
-    section{
-      header{ editableString(w.title) }
-      editableText(w.content)
-    }
-  }
-
-  define unknownWiki(key : String) {
-    action create() {
-      createWiki(key);
-    }
-    "No such wiki page found."
-    if(mayCreateWiki()) {
-      submit create() { "Create Wiki Page" }
-    }
-  }
-  
-  define byLine(key: String) { 
-    var w := findWiki(key); if(w != null) { byLine(w) }
-  }
-  
   define byLine(w: Wiki) {
     block[class="byline"] {
       "Created " output(w.created.format("MMMM d, yyyy")) 
-      " Last modified " output(w.modified.format("MMMM d, yyyy"))
-      " Contributions by " for(u: User in w.authors) { output(u) } separated-by{ ", " }
+      " | Last modified " output(w.modified.format("MMMM d, yyyy"))
+      if(!w.public()) { " | not public " }
+      " | Contributions by " for(u: User in w.authors) { output(u) } separated-by{ ", " }
     }
   }
+  
+  define wikiActions(w: Wiki) {
+    action edit() { replace(view, editWiki(w)); }
+    action publish() { w.show(); }
+    action hide() { w.hide(); }
+    block[class="wikiActions"]{
+      submitlink edit() { "[Edit]" } " "
+      if(w.public()) { 
+        submitlink hide() { "[Hide]" }
+      } else {
+        submitlink publish() { "[Publish]" }
+      }
+    }
+  }
+
+section links to wiki page
+      
+  function link(w : Wiki): String {
+    return navigate(wiki(w.key)); 
+  }
+  
+  define output(w : Wiki) {
+    navigate wiki(w.key) { if(w.title == "") { output(w.key) } else { output(w.title) } }
+  }
+  
+  define unknownWiki(key : String) {
+    action create() { createWiki(key); }
+    <h1>output(key)</h1>
+    par{ "No page with key " output(key) " found." }
+    par{
+      if(mayCreateWiki()) {
+        submit create() { "Create Wiki Page" }
+      }
+    }
+  }
+  
+access control rules
+  rule page pageindex() { true }
   
 section page index
   
   define page pageindex() {
-    main{
+    wikilayout{
       header{"Index"}
       list{
-        for(w : Wiki order by w.title) {
+        for(w : Wiki where w.mayView() order by w.title ) {
           listitem{ output(w) }
         }
       }

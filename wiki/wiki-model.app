@@ -5,6 +5,7 @@ section application administration
   entity Application {
     title  :: String
     footer :: WikiText
+    email  :: Email
   }
   
   var application := Application { title := "No Title" footer := "no footer" }
@@ -20,7 +21,8 @@ section wiki pages
     public   :: Bool     (default=true)
     authors  -> Set<User> 
     function modified()       { 
-      modified := now(); authors.add(principal()); 
+      modified := now(); 
+      authors.add(principal()); 
     }
     function mayView() : Bool { return public() || loggedIn(); }
     function mayEdit() : Bool { return loggedIn(); }
@@ -34,7 +36,16 @@ section wiki pages
   
   function createWiki(key: String): Wiki {
     var w := Wiki{ key := key title := key };
+    if(principal() != null) {
+       w.content := "-- [[profile(" + principal().username + ")|" + principal().fullname + "]]";
+    }
     w.save();
+    return w;
+  }
+  
+  function findCreateWiki(key: String): Wiki {
+    var w := findWiki(key);
+    if(w == null) { w := createWiki(key); }
     return w;
   }
    
@@ -50,4 +61,9 @@ section wiki pages
       return select w from Wiki as w where w.public is true
            order by w.modified desc limit n*(index-1),n;
     }
+  }
+  
+  function wikiTitle(key: String): String {
+    var w := findWiki(key);
+    if(w == null) { return key; } else { return w.title; }
   }

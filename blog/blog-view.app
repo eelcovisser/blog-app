@@ -247,15 +247,6 @@ section posts
     submitlink new() { "[New Post]" }
   }
   
-  define page post(p: Post, title: String) {
-    title{ output(p.title) }
-    bloglayout(p.blog){
-    	placeholder view { postView(p) }
-    	postComments(p)
-    }
-    postCommentCountScript
-  }
-  
   define postByLine(p: Post) {
     <div class="postByline">
       if(p.publicComments()) { <span class="comments">postCommentCount(p) </span> }
@@ -292,6 +283,17 @@ section posts
     </div>
   }
 
+section post
+
+  define page post(p: Post, title: String) {
+    title{ output(p.title) }
+    bloglayout(p.blog){
+      placeholder view { postView(p) }
+      postComments(p)
+    }
+    postCommentCountScript
+  }
+  
   define ajax postView(p: Post) {
     <div class="postView">
 	    <h1>output(p.title)</h1>
@@ -300,7 +302,21 @@ section posts
 	    postActions(p)
 	  </div>
   }
-  
+
+  define ajax postEdit(p: Post) {
+    action save() { p.modified(); replace(view, postView(p)); }
+    <div class="postView">
+      <h1>output(p.title)</h1>
+      postByLine(p)
+      form{
+        formEntry("Title") { input(p.title) }
+        formEntry("Content") { input(p.content) } 
+        formEntry("Created") { input(p.created) }
+        submit save() { "Save" }
+      }
+    </div>
+  }
+    
   define postActions(p: Post) {    
   	action edit() { replace(view, postEdit(p)); }
     action remove() { var b := p.blog; if(p.remove()) { return other(b,1); } }
@@ -332,20 +348,6 @@ section posts
 	  </div>
   }
   
-  define ajax postEdit(p: Post) {
-    action save() { p.modified(); replace(view, postView(p)); }
-    <div class="postView">
-      <h1>output(p.title)</h1>
-      postByLine(p)
-	    form{
-	      formEntry("Title") { input(p.title) }
-	      formEntry("Content") { input(p.content) } 
-	      formEntry("Created") { input(p.created) }
-	      submit save() { "Save" }
-	    }
-	  </div>
-  }
- 
 section comments
 
   define postComments(p: Post) {
