@@ -6,9 +6,13 @@ section application administration
     title  :: String
     footer :: WikiText
     email  :: Email
+    acceptRegistrations :: Bool (default=true)
   }
   
-  var application := Application { title := "No Title" footer := "no footer" }
+  var application := Application { 
+    title  := "No Title" 
+    footer := "no footer" 
+  }
   
 section wiki pages 
 
@@ -25,7 +29,7 @@ section wiki pages
       authors.add(principal()); 
     }
     function mayView() : Bool { return public() || loggedIn(); }
-    function mayEdit() : Bool { return loggedIn(); }
+    function mayEdit() : Bool { return loggedIn() && isWriter(); }
     function public(): Bool {
       if(public == null) { public := true; }
       return public;

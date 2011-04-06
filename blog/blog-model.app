@@ -13,10 +13,18 @@ section blog
 		contact :: WikiText
 		links   :: WikiText
 		
+		authors -> Set<User>
+		
 		function rename(x: String) {
 		  var k := keyFromName(x);
 		  assert(findBlog(k) == null, "that name is already taken");
 		  key := k;
+		}
+		function mayPost(): Bool {
+		  return isWriter() && isAuthor();
+		}
+		function isAuthor(): Bool {
+		  return authors.length == 0 || principal() in authors;
 		}
 	}
 	
@@ -25,6 +33,7 @@ section blog
 	    title := name
 	    key   := keyFromName(name)
 	  };
+	  b.authors.add(principal());
 	  if(mainBlogQuery() == null) { b.main := true; }
 	  b.save();
 	  return b;
@@ -77,8 +86,8 @@ section posts
 	    	number  := lastPost.next()
 	      blog    := this
 	      title   := "No Title"
-	      author  := principal()
 	    };
+	    authors.add(principal());
 	    p.save();
 	    postCount := null;
 	    postPublicCount := null;
@@ -97,7 +106,7 @@ section posts
 		created   :: DateTime (default=now())
 		modified  :: DateTime (default=now())
 		deleted   :: Bool (default=false)
-		author    -> User
+		authors   -> Set<User>
 
 		extend function setTitle(x: String) {
 		  urlTitle := keyFromName(x);
@@ -108,8 +117,11 @@ section posts
 		function modified() {
 		  modified := now();
 		}
+		function isAuthor(): Bool {
+		  return principal() in authors || blog.isAuthor();
+		}
 		function mayEdit(): Bool { 
-			return author == principal();
+			return isAuthor();
 		}
     function mayView(): Bool { 
       if(public == null) { public := false; }

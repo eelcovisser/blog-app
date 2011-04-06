@@ -7,7 +7,7 @@ imports wiki/wiki-model
 
 access control rules
 
-  rule page admin() { loggedIn() }
+  rule page admin() { isAdministrator() }
   
 section application
 
@@ -22,6 +22,7 @@ section application
         formEntry("Title"  ){ input(application.title)  }
         formEntry("Footer" ){ input(application.footer) }
         formEntry("Email"  ){ input(application.email)  }
+        formEntry("acceptRegistrations"  ){ input(application.acceptRegistrations)  }
         submit action{ } { "Save" }
       }
     }
@@ -35,7 +36,7 @@ imports lib/pageindex
       navigate feed("wiki") { "RSS" }
       sidebarSection{
         includeWiki("sidebar")
-        if(loggedIn()) { includeWiki("adminSidebar") }
+        if(isAdministrator()) { includeWiki("adminSidebar") }
       }
     }
     <div id="wiki">
@@ -98,14 +99,14 @@ access control rules
   rule template showWiki(w : Wiki) { w.mayView() } 
   rule template unknownWiki(key : String) { 
     true
-    rule action create() { loggedIn() }
+    rule action create() { isWriter() }
   }
   rule page wiki(key : String) { true }
   rule page pageindex() { loggedIn() }
   
   rule ajaxtemplate showWiki(w: Wiki) { true }
-  rule ajaxtemplate editWiki(w: Wiki)  { loggedIn() }
-  rule template wikiActions(w: Wiki) { loggedIn() }
+  rule ajaxtemplate editWiki(w: Wiki)  { isWriter() }
+  rule template wikiActions(w: Wiki) { isWriter() }
   
 section wiki
 
@@ -199,11 +200,15 @@ section page index
   
   define page pageindex() {
     wikilayout{
-      header{"Index"}
+      header{"Wiki"}
       list{
         for(w : Wiki where w.mayView() order by w.title ) {
           listitem{ output(w) }
         }
+      }
+      header{"Administration"}
+      list{
+        //listitem{ navigate }
       }
     }
   }

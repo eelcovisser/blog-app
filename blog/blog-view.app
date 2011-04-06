@@ -4,17 +4,17 @@ imports blog/blog-model
 imports layout/layout-view
 
 access control rules
-  rule template newBlog() { loggedIn() }
-  rule template newPost(b: Blog) { loggedIn() }
-  
+  rule template newBlog() { isAdministrator() }
+  rule template newPost(b: Blog) { b.mayPost() }
+   
 section blog page layout
 
-  define bloglayout(b: Blog) {
+  define bloglayout(b: Blog) {  
     define pageheader() { 
       <div class="title">link(b){ output(b.title) }</div>
     }
     define sidebar() {
-      searchPosts(b)      
+      searchPosts(b)       
       sidebarSection{
         list{
           listitem{ navigate about() { "About" } }
@@ -35,7 +35,7 @@ section blog page layout
   define recentPosts(b: Blog) {
   	sidebarSection{ 
       <h2>"Recent Posts"</h2>
-      list{ for(p: Post in b.recentPosts(1,10,loggedIn())){ listitem{ recentPost(p) } } }
+      list{ for(p: Post in b.recentPosts(1,10,isWriter())){ listitem{ recentPost(p) } } }
     }
   }
   
@@ -114,8 +114,8 @@ section blog table of contents
     define pageIndexLink(i: Int, lab: String) { navigate index(i) { output(lab) } }
     bloglayout(b){
       <h1>"Index"</h1>
-      for(p: Post in b.recentPosts(index, 10, loggedIn())) { postInIndex(p) }
-      pageIndex(index, b.postCount(loggedIn()), 10)
+      for(p: Post in b.recentPosts(index, 10, isWriter())) { postInIndex(p) }
+      pageIndex(index, b.postCount(isWriter()), 10)
     }
     postCommentCountScript
   }
@@ -158,8 +158,8 @@ section blog front page
     title{ output(b.title) " | page " output(index) }
     define pageIndexLink(i: Int, lab: String) { link(b,i) { output(lab) } }
     bloglayout(b){
-      for(p: Post in b.recentPosts(index,5,loggedIn())) { postInList(p) }    
-      pageIndex(index, b.postCount(loggedIn()), 5)
+      for(p: Post in b.recentPosts(index,5,isWriter())) { postInList(p) }    
+      pageIndex(index, b.postCount(isWriter()), 5)
     }
     postCommentCountScript
   }
@@ -174,9 +174,9 @@ section blog front page
   }
   
 access control rules
-  rule page blogadmin(b: Blog) { loggedIn() }
-  rule page blogadminmain() { loggedIn() }
-  
+  rule page blogadmin(b: Blog) { b.isAuthor() }
+  rule page blogadminmain() { mainBlog().isAuthor() }
+   
 section blog admin
 
   define blogAdmin(b: Blog) { 
@@ -214,14 +214,14 @@ section blog admin
   
 access control rules
 
-  rule template recentPost(p: Post) { p.mayView() }
-  rule page post(p: Post, title: String) { p.mayView() } 
-  rule template newPost(b: Blog) { loggedIn() }
-  rule template postInSearch(p: Post) { p.mayView() }
-  rule template postInList(p: Post) { p.mayView() }
-  rule ajaxtemplate postView(p: Post) {  p.mayView() }
-  rule ajaxtemplate postActions(p: Post) { p.mayEdit() }
-  rule ajaxtemplate postEdit(p: Post) { p.mayEdit() }
+  rule template recentPost(p: Post)      { p.mayView()  }
+  rule page post(p: Post, title: String) { p.mayView()  } 
+  rule template newPost(b: Blog)         { b.isAuthor() }
+  rule template postInSearch(p: Post)    { p.mayView()  }
+  rule template postInList(p: Post)      { p.mayView()  }
+  rule ajaxtemplate postView(p: Post)    { p.mayView()  }
+  rule ajaxtemplate postActions(p: Post) { p.mayEdit()  }
+  rule ajaxtemplate postEdit(p: Post)    { p.mayEdit()  }
   
 section posts
 

@@ -1,4 +1,4 @@
-module user/user-model
+module user/user-model 
  
 principal is User with credentials username, password
 
@@ -6,9 +6,9 @@ access control rules
   rule page *(*) { true }
   rule ajaxtemplate *(*) { true }
   
-  predicate isAdministrator() { principal().isAdministrator() }
-  predicate isWriter() { principal().mayWrite() }
-  predicate isCommenter() { principal().mayComment() }
+  predicate isAdministrator() { loggedIn() && principal().isAdministrator() }
+  predicate isWriter() { loggedIn() && principal().mayWrite() }
+  predicate isCommenter() { loggedIn() && principal().mayComment() }
  
 section users
 
@@ -36,11 +36,38 @@ section users
 	  }
 	}
 	
+section reset password
+
+  extend entity User {
+    function savePassword() { 
+      password := password.digest();
+    }
+    function resetPassword() {
+      var r := ResetPassword{ user := this };
+      r.save();
+      email resetPassword(r);
+    }
+  }
+  
+  entity ResetPassword {
+    user    -> User
+    created :: DateTime (default=now())
+  }
+  
+  define email resetPassword(r: ResetPassword) {
+    to(r.user.email)
+    from(application.email)
+    subject("Reset Password")
+    "You can reset your password for " output(navigate(root())) " by visiting " 
+    output(navigate(reset(r)))
+  }
+	
 section registration
 
   extend entity User {
     confirmEmail -> ConfirmEmail
     function register() {
+      log("register");
       username := username.toLowerCase();
       email := email.toLowerCase();
       password := password.digest();
@@ -52,9 +79,11 @@ section registration
         mayWrite := true;
         confirmed := true;
         application.email := email;
-      }
+        application.acceptRegistrations := false;
+      } 
       this.save();
       confirmEmail.save();
+      log("register done; sending email");
       email confirmEmail(confirmEmail);
     }
     function update() {
@@ -82,8 +111,8 @@ section registration
     from(application.email)
     to(c.email)
     subject("Confirm your email address")
-    "Dear " output(c.user.fullname) ",\n"
-    "Thanks for registering for " output(navigate(root())) ".\n"
-    "To finalize your registration, please confirm your email address by visiting "
-    output(navigate(confirmemail(c))) "\n"
+    par{"Dear " output(c.user.fullname) ","}
+    par{ "Thanks for registering for " output(navigate(root())) "."}
+    par{ "To finalize your registration, please confirm your email address by visiting "
+         output(navigate(confirmemail(c))) }
   }

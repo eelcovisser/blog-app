@@ -32,8 +32,8 @@ section authentication
 			input(n) input(p)
 			submit action{ authenticate(n, p); } { "Sign In" }
 		}
-		" | " navigate register() { "Sign Up" }
-		" | " navigate resetpassword(){ "Reset Password" }
+		navigate register() { "Sign Up" }
+		navigate resetpassword(){ "Reset Password" }
 	}
 	define signoff() {
 		"Signed as " output(principal()) " | " form{ submitlink action{ logout(); }{ "[Sign Off]" } }
@@ -94,7 +94,45 @@ section reset password
 
   define page resetpassword() {
     init{ if(loggedIn()) { goto updateaccount(principal()); } }
-    // todo
+    var email: Email
+    action reset() { 
+      var users := findUserByEmail(email);
+      validate(users.length == 1, "That email address is unknown to us.");
+      users.get(0).resetPassword();
+      message("You will receive instructions for resetting your password by email.");
+      return root();
+    }
+    title{"Reset Password"}
+    main{
+      <h1>"Reset Password"</h1>
+      form{
+        formEntry("Email"){ input(email) }
+        captcha
+        submit reset() { "Reset" }
+      }
+    }
+  }
+  
+  define page reset(r: ResetPassword) {
+    action save() { 
+      r.user.savePassword();
+      message("Your password has been reset.");
+      return root();
+    }    
+    title{"Set New Password"}
+    main{
+      <h1>"Enter New Password"</h1>
+      form{
+        editPassword(r.user)
+        submit save() { "Save" }
+      }
+    }
+  }
+  
+access control rules
+  
+  rule page register() {
+    application.acceptRegistrations || isAdministrator()
   }
   
 section registration
