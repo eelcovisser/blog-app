@@ -14,7 +14,12 @@ body {
 	text-align: center;
 	color: black;
 	background-color: white;
-} 
+}
+
+img {
+	border : 0;
+	margin : 10px;
+}
 
 /* ------------------------------
 links
@@ -49,13 +54,13 @@ headers
 ------------------------------ */
 
 h1 {
-	font-size: 24px;
+	font-size: 20px;
   margin: 0 0 20px;
 }
 
 h2 {
 	color: black;
-	font-size: 20px;
+	font-size: 18px;
   margin: 20px 0 10px;
 }
 
@@ -581,7 +586,7 @@ contents styles
 }
  
 #contents p {
-	line-height: 165%;
+	line-height: 130%;
 }
 
 .blogentry {
