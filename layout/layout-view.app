@@ -52,7 +52,7 @@ section main template
   
 section error messages
 
-  define ignore-access-control templateSuccess(messages : List<String>) {
+  define override ignore-access-control templateSuccess(messages : List<String>) {
     <div id="message">
       output(messages)
     </div>
