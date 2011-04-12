@@ -115,6 +115,7 @@ section posts
 		  key := n + "";
 		}
 		function modified() {
+		  if(!public) { created := now(); }
 		  modified := now();
 		}
 		function isAuthor(): Bool {

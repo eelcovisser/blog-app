@@ -17,6 +17,7 @@ section users
 	  fullname        :: String (name)
 	  password        :: Secret
 	  email           :: Email
+	  profile         :: WikiText
 	  confirmed       :: Bool (default=false)
 	  isAdministrator :: Bool (default=false)
 	  mayComment      :: Bool (default=true)
@@ -33,6 +34,10 @@ section users
 	  function mayWrite(): Bool {
 	    if(mayWrite == null) { mayWrite := false; }
 	    return mayWrite;
+	  }
+	  function mayUpdate(): Bool {
+	    return loggedIn() 
+	        && (principal() == this || principal().isAdministrator());
 	  }
 	}
 	

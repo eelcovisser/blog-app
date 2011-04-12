@@ -7,6 +7,9 @@ section application administration
     footer :: WikiText
     email  :: Email
     acceptRegistrations :: Bool (default=true)
+    disqusForumId :: String
+    analyticsOn :: Bool (default=false)
+    analyticsAccount :: String
   }
   
   var application := Application { 
@@ -71,3 +74,4 @@ section wiki pages
     var w := findWiki(key);
     if(w == null) { return key; } else { return w.title; }
   }
+  

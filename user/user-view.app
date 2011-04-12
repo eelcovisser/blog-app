@@ -2,6 +2,10 @@ module user/user-view
 
 imports user/user-model
 
+access control rules
+
+  rule page editprofile(u: User) { u.mayUpdate() }
+  
 section user profile
 
   define output(u: User) {
@@ -14,7 +18,19 @@ section user profile
 	  }
 	  main{
 	    <h1>output(u.fullname)</h2>
+	    output(u.profile)
 	    //contributions
+	    navigate editprofile(u) { "[Edit]" }
+	  }
+	}
+	
+	define page editprofile(u: User) {
+	  main{
+      <h1>output(u.fullname)</h2>
+      form{
+        input(u.profile)
+        submit action{ return profile(u); } { "Save" }
+      }
 	  }
 	}
 	
@@ -50,8 +66,10 @@ section access denied
   
 access control rules
 
-  rule page updateaccount(u: User) {
-    principal() == u
+  rule page updateaccount(u: User) { u.mayUpdate() }
+  
+  rule template authorizeUser(u: User) {
+    principal().isAdministrator()
   }
   
 section update account 
@@ -68,7 +86,8 @@ section update account
       form{
         editPassword(u)
         submit save() { "Reset" }
-      }      
+      }
+      authorizeUser(u)
     }
   }
   
@@ -88,6 +107,22 @@ section update account
     formEntry("Repeat Password" ){ input(p) { 
       validate(p == u.password, "passwords don't match")}
     } 
+  }
+  
+  define authorizeUser(u: User) {
+    <h1>"Authorize User"</h1>
+    form{
+      formEntry("May Comment"){
+        input(u.mayComment)
+      }
+      formEntry("May Write"){
+        input(u.mayWrite)
+      }
+      formEntry("Is Administrator"){
+        input(u.isAdministrator)
+      }
+      submit action{ return profile(u); } { "Authorize" }
+    }
   }
   
 section reset password

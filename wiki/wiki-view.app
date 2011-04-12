@@ -19,10 +19,22 @@ section application
   define page admin() {
     main{
       form{
-        formEntry("Title"  ){ input(application.title)  }
-        formEntry("Footer" ){ input(application.footer) }
-        formEntry("Email"  ){ input(application.email)  }
-        formEntry("acceptRegistrations"  ){ input(application.acceptRegistrations)  }
+        formEntry("Title"){ 
+          input(application.title)  }
+        formEntry("Email"){ 
+          input(application.email)  }
+        formEntry("Disqus Forum Id"){ 
+          input(application.disqusForumId) }
+        formEntry("Analytics On") {
+          input(application.analyticsOn)
+        }
+        formEntry("Google Analytics Account"){
+          input(application.analyticsAccount)
+        }
+        formEntry("acceptRegistrations"){ 
+          input(application.acceptRegistrations)  }
+        formEntry("Footer"){ 
+          input(application.footer) }
         submit action{ } { "Save" }
       }
     }
@@ -38,6 +50,9 @@ imports lib/pageindex
         includeWiki("sidebar")
         if(isAdministrator()) { includeWiki("adminSidebar") }
       }
+    }
+    define rssLink() {
+      <link rel="alternate" type="application/rss+xml" title="RSS" href=navigate(feed("wiki")) />
     }
     <div id="wiki">
     main{

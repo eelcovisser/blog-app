@@ -1,13 +1,22 @@
 module blog/blog-view
 
 imports blog/blog-model
-imports layout/layout-view
+imports layout/layout-view 
 
 access control rules
   rule template newBlog() { isAdministrator() }
   rule template newPost(b: Blog) { b.mayPost() }
    
 section blog page layout
+
+  define bloglayoutAux() {
+    define rssLink() {
+      <link rel="alternate" type="application/rss+xml" title="RSS" href=navigate(feed("wiki")) /> 
+    }
+    main{
+      elements
+    }
+  }
 
   define bloglayout(b: Blog) {  
     define pageheader() { 
@@ -27,7 +36,7 @@ section blog page layout
     	recentPosts(b)
     	blogAdmin(b)
     }
-    main{
+    bloglayoutAux{
       elements
     }
   }
@@ -353,11 +362,12 @@ section comments
   define postComments(p: Post) {
     var url := plainLink(p)
     var id := p.id
+    var forum := application.disqusForumId
     if(p.publicComments()) {
 	    <div id="disqus_thread"></div>
 	    <script type="text/javascript">
 		    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-		    var disqus_shortname = 'eelcovisser'; // required: replace example with your forum shortname
+		    var disqus_shortname = '~forum'; // required: replace example with your forum shortname
 		
 		    // The following are highly recommended additional parameters. Remove the slashes in front to use.
 		    var disqus_identifier = '~id';
@@ -380,9 +390,10 @@ section comments
   }
   
   define postCommentCountScript() {
+    var forum := application.disqusForumId
     <script type="text/javascript">
 	    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-	    var disqus_shortname = 'eelcovisser'; // required: replace example with your forum shortname
+	    var disqus_shortname = '~forum'; // required: replace example with your forum shortname
 	
 	    /* * * DON'T EDIT BELOW THIS LINE * * */
 	    (function () {
