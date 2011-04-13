@@ -10,6 +10,10 @@ section application administration
     disqusForumId :: String
     analyticsOn :: Bool (default=false)
     analyticsAccount :: String
+    function update() { 
+      if(analyticsOn == null) { analyticsOn := false; }
+      if(acceptRegistrations == null) { acceptRegistrations := false; }
+    }
   }
   
   var application := Application { 

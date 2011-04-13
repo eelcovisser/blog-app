@@ -17,6 +17,7 @@ section application
   }
   
   define page admin() {
+    init{ application.update(); }
     main{
       form{
         formEntry("Title"){ 
