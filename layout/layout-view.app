@@ -63,7 +63,7 @@ section error messages
   
 section tracking
 
-  // UA-9607449-1
+  // 
 
   define analytics() {
     var account := application.analyticsAccount
