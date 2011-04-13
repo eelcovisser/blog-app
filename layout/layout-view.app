@@ -5,7 +5,7 @@ section main template
   define main() {
     includeCSS("eelcovisser.css")
     includeHead(rendertemplate(rssLink()))
-    analytics()
+    includeHead(rendertemplate(analytics))
     <div id="pageheader">
       <div id="pageheadercontent">
         pageheader

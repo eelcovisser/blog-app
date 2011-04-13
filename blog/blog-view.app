@@ -144,7 +144,8 @@ section blog rss
   	    <item> 
           <title>output(p.title)</title>
           <link>output(permalink(p))</link>
-          <description>output(abbreviate(p.content,500))</description>
+          //<description>output(abbreviate(p.content,500))</description>
+          <description>output(p.content)</description>
           <guid>output(permalink(p))</guid>
           <pubDate>output(p.created)</pubDate>
        </item>
