@@ -185,17 +185,36 @@ section blog front page
 access control rules
   rule page blogadmin(b: Blog) { b.isAuthor() }
   rule page blogadminmain() { mainBlog().isAuthor() }
+  
+  rule template showHiddenPosts(b: Blog) { 
+    loggedIn()
+  }
    
 section blog admin
 
   define blogAdmin(b: Blog) { 
     sidebarSection{
-      newPost(b)  
-      if(b.main) { 
-        navigate blogadminmain() { "[Admin]" }
-      } else { 
-        navigate blogadmin(b){ "[Admin]" } 
+      <h2>"Internal"</h2>
+      list{
+	      listitem{ newPost(b) }
+	      listitem{ showHiddenPosts(b) }
+	      listitem {
+	        if(b.main) { 
+	          navigate blogadminmain() { "Blog Configuration" }
+	        } else { 
+	          navigate blogadmin(b){ "Blog Configuration" } 
+	        }
+	      }
       }
+    }
+  }
+  
+  define showHiddenPosts(b: Blog) {
+    action toggle() { principal().toggleShowHiddenPosts(); }
+    if(showHiddenPosts()) {
+      submitlink toggle() { "[Hide Non-Public Posts]" }
+    } else {
+      submitlink toggle() { "[Show Non-Public Posts]" }
     }
   }
   

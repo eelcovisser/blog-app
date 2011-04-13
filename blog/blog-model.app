@@ -51,6 +51,21 @@ section blog
 
 section posts
 
+  function showHiddenPosts(): Bool { 
+    return loggedIn() && principal().showHiddenPosts();
+  }
+
+  extend entity User {
+    showHiddenPosts :: Bool (default=true)
+    function showHiddenPosts(): Bool {
+      if(showHiddenPosts == null) { showHiddenPosts := true; }
+      return showHiddenPosts;
+    }
+    function toggleShowHiddenPosts() { 
+      showHiddenPosts := !showHiddenPosts();
+    }
+  }
+
   entity LastPost {
   	last :: Int (default=0)
   	function next(): Int { last := last + 1; return last; }
@@ -60,7 +75,7 @@ section posts
 
 	extend entity Blog {
 	  function recentPosts(index: Int, n: Int, includePrivate: Bool): List<Post> {
-	    if(includePrivate) {
+	    if(includePrivate && showHiddenPosts()) {
 		    return select p from Post as p 
 		            where p.blog = ~this 
 		         order by p.created desc limit n*(index-1),n;
@@ -79,7 +94,7 @@ section posts
 	    if(postPublicCount == null) {
 	      postPublicCount := (select count(p) from Post as p where p.blog = ~this and p.public is true);
 	    }
-	    if(includePrivate) { return postCount; } else { return postPublicCount; }
+	    if(includePrivate && showHiddenPosts()) { return postCount; } else { return postPublicCount; }
 	  }
 	  function addPost(): Post {
 	    var p := Post{ 
@@ -115,8 +130,9 @@ section posts
 		  key := n + "";
 		}
 		function modified() {
-		  if(!public) { created := now(); }
-		  modified := now();
+		  var date := now();
+		  if(!public) { created := date; }
+		  modified := date;
 		}
 		function isAuthor(): Bool {
 		  return principal() in authors || blog.isAuthor();
