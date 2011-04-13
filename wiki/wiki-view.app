@@ -109,8 +109,8 @@ section wiki rss
         <item> 
           <title>output(w.title)</title>
           <link>output(link(w))</link>
-          //<description>output(abbreviate(w.content,500))</description>
-          <description>output(w.content)</description>
+          <description>output(abbreviate(w.content,2000) as WikiText)</description>
+          //<description>output(w.content)</description>
           <guid>output(link(w))</guid>
           <pubDate>output(w.modified)</pubDate>
        </item> 
