@@ -48,7 +48,14 @@ imports lib/pageindex
       navigate feed("wiki") { "RSS" }
       sidebarSection{
         includeWiki("sidebar")
-        if(isAdministrator()) { includeWiki("adminSidebar") }
+        if(isAdministrator()) { 
+          includeWiki("adminSidebar")
+          
+          list{ 
+            listitem{ navigate pageindex() { "Index" } }
+            listitem{ navigate admin() { "Site Configuration" } } 
+          }
+        }
       }
     }
     define rssLink() {
@@ -130,7 +137,7 @@ section wiki
     title{ output(wikiTitle(key)) }
     wikilayout{
       placeholder view{
-        if(w == null) {
+        if(w == null || !w.mayView()) {
           unknownWiki(key)
         } else {
           showWiki(w)
@@ -200,7 +207,7 @@ section links to wiki page
   define unknownWiki(key : String) {
     action create() { createWiki(key); }
     <h1>output(key)</h1>
-    par{ "No page with key " output(key) " found." }
+    par{ "That page does not exist, or you do not have permission to view it." }
     par{
       if(mayCreateWiki()) {
         submit create() { "Create Wiki Page" }
