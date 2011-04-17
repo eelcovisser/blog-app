@@ -50,17 +50,23 @@ module lib/string
   }
 
   function prefix(x : String) : String {
+    /*
     var p : String := "";
     var chars : List<String> := x.split();
     for(i : Int from 0 to chars.length) { p := p + chars.get(i); }
     return p;
+    */
+    return x;
   }
 
   function substring(x : String, i : Int, j : Int) : String {
+    /*
     var p : String := "";
     var chars : List<String> := x.split();
     for(i : Int from max(0, min(i, chars.length)) to min(j, chars.length)) { p := p + chars.get(i); }
     return p;
+    */
+    return x.substring(i,j);
   }
   
   function isURL(x : String) : Bool {
@@ -84,7 +90,14 @@ module lib/string
     }
   }
 
+  type String{
+    substring(Int):String
+    substring(Int,Int):String
+  }
+
   function prefix(s : String, length : Int) : String {
+    return s.substring(0,length);
+    /*
     if(s.length() <= length) {
       return s;
     } else {
@@ -92,4 +105,5 @@ module lib/string
       sChar.removeAt(length);
       return prefix(sChar.concat(), length);
     }
+    */
   }
