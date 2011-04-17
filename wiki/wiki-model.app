@@ -27,6 +27,7 @@ section wiki pages
     key      :: String   (id, validate(isUniqueWiki(this), "A Wiki page with that name already exists."))
     title    :: String   (name, default=key, searchable)
     content  :: WikiText (default= "", searchable)
+    attachments -> Attachments
     created  :: DateTime (default=now())
     modified :: DateTime (default=now())
     public   :: Bool     (default=true)
@@ -43,6 +44,9 @@ section wiki pages
     }
     function show() { public := true; }
     function hide() { public := false; }
+    function update() { 
+      if(attachments == null) { attachments := newAttachments(); }
+    }
   }
   
   function createWiki(key: String): Wiki {

@@ -187,6 +187,37 @@ div.wikiActions a {
   color: black;
 }
 
+
+/* ------------------------------
+attachments
+------------------------------ */
+
+div.attachment h3 {
+	margin: 20px 0 0 0;
+}
+
+div.attachmentInfo {
+	position: relative;
+  width : 100%;
+  clear : both;
+  padding : 2px 0 0 0;
+  margin : 2px 0 25px 0; 
+  border-top : 1px dashed #aaaaaa;
+  font-size : 14px;
+}
+
+div.attachmentActions {
+	position: absolute;
+	left : 0;
+}
+
+div.attachmentModified {
+  position: absolute;
+  right : 0;
+}
+
+
+
 /* ------------------------------
 forms
 ------------------------------ */
@@ -631,3 +662,46 @@ footer styles
   padding : 20px 0 20px 0;
   color : black;
 }
+
+
+/* ------------------------------
+modal dialog
+------------------------------ */
+
+
+div.modalDialog {
+  position: absolute;
+  top: 2%;
+  left: 50%;
+  margin-left:-350px;
+  width: 700px;
+  height: 90%;
+  border: 1px solid #444444;
+  background-color: white;
+  overflow: auto;
+  padding : 10px;        
+  -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,10);  
+  -moz-box-shadow: 0px 0px 20px rgba(0,0,0,10);  
+  box-shadow: 0px 0px 20px rgba(0,0,0,10);  
+   border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px; */
+}
+
+/* modal dialog */
+
+div.modalDialogBG {
+  z-index: 300000;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0px;
+  left: 0px;
+  background-color: rgba(50,50,50,0.5);
+}
+
+div.modalDialogClose {
+        float: right;
+}
+
+

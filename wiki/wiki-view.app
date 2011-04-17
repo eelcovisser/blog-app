@@ -149,10 +149,12 @@ section wiki
   }
 
   define ajax showWiki(w : Wiki) { 
+    init{ w.update(); }
     <h1>output(w.title)</h1>
-    output(w.content)          
-    byLine(w)
+    output(w.content)
     wikiActions(w)
+    byLine(w)
+    attachments(w.attachments)
   }
   
   define includeWiki(key: String) {
