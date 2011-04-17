@@ -187,6 +187,8 @@ access control rules
   rule page blogadmin(b: Blog) { b.isAuthor() }
   rule page blogadminmain() { mainBlog().isAuthor() }
   
+  rule template blogAdmin(b: Blog) { loggedIn() }
+  
   rule template showHiddenPosts(b: Blog) { 
     loggedIn()
   }
