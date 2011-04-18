@@ -3,7 +3,7 @@ module layout/layout-view
 section main template
 
   define main() {
-    includeCSS("eelcovisser.css")
+    includeCSS("style.css")
     includeHead(rendertemplate(rssLink()))
     includeHead(rendertemplate(analytics))
     <div id="pageheader">

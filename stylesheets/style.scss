@@ -9,7 +9,7 @@ $base00:    #657b83;
 $base0:     #839496;
 $base1:     #93a1a1;
 $base2:     #eee8d5;
-$base3:     #eee8d5;
+$base3:     #fdf6e3;
 $yellow:    #b58900;
 $orange:    #cb4b16;
 $red:       #dc322f;
@@ -18,6 +18,29 @@ $violet:    #6c71c4;
 $blue:      #268bd2;
 $cyan:      #2aa198;
 $green:     #859900;
+
+/*
+@mixin rebase($rebase03,$rebase02,$rebase01,$rebase00,$rebase0,$rebase1,$rebase2,$rebase3) 
+{
+    background-color:$rebase03;
+    color:$rebase0;
+    * { color:$rebase0; }
+    h1,h2,h3,h4,h5,h6 { color:$rebase1; border-color: $rebase0; }
+    a, a:active, a:visited { color: $rebase1; }
+}
+@mixin accentize($accent) {
+    a, a:active, a:visited, code.url { color: $accent; }
+    h1,h2,h3,h4,h5,h6 {color:$accent}
+}
+*/
+/* light is default mode, so pair with general html definition */
+
+/* html, .light { @include rebase($base3,$base2,$base1,$base0,$base00,$base01,$base02,$base03)}
+.dark  { @include rebase($base03,$base02,$base01,$base00,$base0,$base1,$base2,$base3)}
+html * {
+    color-profile: sRGB;
+    rendering-intent: auto;
+} */
 
 
 /* ------------------------------
@@ -38,8 +61,8 @@ body {
   font-family: Garamond, serif;
 	font-size: 16px;
 	text-align: center;
-	color: #073642;
-	background-color: #eee8d5;
+	color: $base02;
+	background-color: $base2;
 }
 
 img {
@@ -55,24 +78,24 @@ a {
 	text-decoration: none;
 }
 a:link {
-	color: #268bd2;
+	color: $blue;
 }
 
 a:visited {
-	color: #268bd2;
+	color: $blue;
 }
 
 a:focus {
-	color: #268bd2;
+	color: $blue;
 }
 
 a:hover {
-	color: #268bd2;
+	color: $blue;
   text-decoration: underline;
 }
 
 a:active {
-	color: #268bd2;
+	color: $blue;
 }
 
 /* ------------------------------
@@ -82,25 +105,25 @@ headers
 h1 {
 	font-size: 20px;
   margin: 0 0 20px;
-  color: #dc322f;
+  color: $orange;
 }
 
 h2 {
 	font-size: 18px;
   margin: 20px 0 10px;
-  color: #dc322f;
+  color: $orange;
 }
 
 h2 a {
 	text-decoration: none;
-  color: #dc322f;
+  color: $orange;
 }
 
 h3 {
-	color: #657b83;
+	color: $base00;
 	font-size: 16px ;
   margin: 20px 0 10px;
-  color: #dc322f;
+  color: $orange;
 }
 
 ul {
@@ -119,10 +142,10 @@ code
 ------------------------------ */
 
 pre {
-	background: #eee8d5;
+	background: $base2;
   margin : 0px;
   padding : 0px;
-  /* border : 1px dashed #586e75; */
+  /* border : 1px dashed $base01; */
 }
 
 
@@ -142,7 +165,8 @@ div.postView h1 {
   margin: 0 0 0 0;
 }
 div.postInList h1 a {
-	color: #dc322f;
+	font-size: 22px;
+	color: $orange;
 }
 
 div.postInSearch {
@@ -153,7 +177,7 @@ div.postInSearch h1 {
 	 font-size: 22px;
 }
 div.postInSearch h1 a {
-  color: #657b83;
+  color: $base00;
 }
 div.postInSearch p {
 	margin: 10px 0 0 0;
@@ -167,7 +191,7 @@ div.postInIndex h1 {
    font-size: 18px;
 }
 div.postInIndex h1 a {
-  color: #657b83;
+  color: $base00;
 }
 div.postInIndex div.postByline {
 	font-size: 12px
@@ -186,18 +210,18 @@ div.postByline {
 	font-size : 16px;
 }
 div.postByline a {
-	color: #657b83;
+	color: $base00;
 }
 div.postByline span.comments {
   font-size: 12px;
   float: left
 }
 div.postByline span.date {
-	font-size: 18px;
+	font-size: 16px;
 }
 
 div.postActions a {
-	color: #657b83;
+	color: $base00;
 }
 
 /* ------------------------------
@@ -212,7 +236,7 @@ div.byline {
 }
 
 div.wikiActions a {
-  color: #657b83;
+  color: $base00;
 }
 
 
@@ -268,14 +292,14 @@ textarea {
   border : 1px solid #cccccc;
   padding : 3px;
   margin-bottom : .5em;
-  background: #eee8d5;
+  background: $base2;
 }
 input { 
   border : 1px solid #cccccc;
   padding : 3px;
   margin-right : .5em;
   margin-bottom : .5em;
-  background: #fdf6e3;
+  background: $base3;
 }
 textarea:focus { 
   border : 1px solid #444444;
@@ -391,7 +415,7 @@ container style
 }
 
 #outercontainer {
-  background : $base3;
+  background : $base2;
 }
 
 #container {
@@ -403,14 +427,14 @@ header styles
 ------------------------------ */
 
 #pageheader {
-  color: #002b36;
+  color: $base03;
   /* border-top: 10px solid #C11F03 ; */
 
-  background : #93a1a1; /* for non-css3 browsers */
+  background : $base03; /* for non-css3 browsers */
   
-  /* filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cccccc', endColorstr='#000000'); /* for IE */
-  background: -webkit-gradient(linear, left top, left bottom, from(#444444), to(#333333)); /* for webkit browsers */
-  background: -moz-linear-gradient(top,  #444444,  #333333); /* for firefox 3.6+ */
+  /* filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cccccc', endColorstr='#000000'); /* for IE 
+  background: -webkit-gradient(linear, left top, left bottom, from(#444444), to(#333333)); /* for webkit browsers 
+  background: -moz-linear-gradient(top,  #444444,  #333333); 
   */
 }
 
@@ -419,10 +443,10 @@ header styles
 
 div.title {
 	font-size: 200%;
-	padding: 20px 0 20px 0;
+	padding: 20px 18px 20px 18px;
 }
 div.title a {
-	color: #eee8d5;
+	color: $base2;
 	text-decoration: none;
 }
 
@@ -451,7 +475,7 @@ mainnav styles
 #mainnav {
   position: relative;
 	background: #aaaaaa;
-	color: #eee8d5;
+	color: $base2;
 	padding: 5px;
 	margin-bottom: 22px;
 	border-bottom: 1px #555555
@@ -461,13 +485,13 @@ mainnav styles
 	margin: 0 0 0 20px;
 	padding: 0;
 	list-style-type: none;
-	border-left: 1px solid #eee8d5;
+	border-left: 1px solid $base2;
 }
 
 #mainnav li {
 	display: inline;
 	padding: 0 10px;
-	border-right: 1px solid #eee8d5;
+	border-right: 1px solid $base2;
 }
 
 #mainnav li a {
@@ -543,17 +567,18 @@ span.indexEntryInactive {
   color : #bbbbbb;
 }
 span.indexEntryCurrent {   
-	border : 1px solid #657b83; 
-	background : #657b83;
-  color : #eee8d5;
+	border : 1px solid $base00; 
+	background : $base00;
+  color : $base2;
 }
 span.indexEntryActive a {  
-	border : 1px solid #657b83;
+	border : 1px solid $base00;
   text-decoration : none;
-  color : #111111;
+  color : $base03;
 }
 span.indexEntryActive a:hover {
-  background : #cccccc;
+  background : $base01;
+  color: $base2;
 }
 span.indexEntryInactive, span.indexEntryCurrent, span.indexEntryActive a {
   padding : 4px;
@@ -571,7 +596,7 @@ sidebar styles
   width: 219px;
   padding: 0 0 0 0px ;
   /* border-left: 1px dashed gray; */
-  background: #eee8d5;
+  background: $base2;
   margin : 20px 0 0 20px;
   font-size: 14px;
 }
@@ -580,7 +605,7 @@ sidebar styles
 	font-size: 16px;
 	margin: 15px 0 5px 0;
 	border-bottom: 1px dashed #aaaaaa;
-	color: #586e75;
+	color: $base01;
 }
 
 #sidebar ul {
@@ -596,13 +621,14 @@ sidebar styles
 #wiki #sidebar {
 	 float: left;
 	 margin: 20px 10px 0 0;
-	 padding: 0 0 0 0px;
+	 padding: 0 0 0 20px;
+	 width : 199px;
 }
 #wiki #container {
 }
 #wiki #contents {
 	margin : 20px 0 0 0 ;
-	padding : 0 18px 0 18px;
+	padding : 20px 18px 20px 18px;
 	width: 716px;
 }
 
@@ -637,13 +663,8 @@ contents styles
   /* -moz-box-shadow: 0 0 4px rgba(0,0,0,0.3);
   box-shadow: 0 0 4px rgba(0,0,0,0.2); */
   /* border : 1px solid gray; */
-  background: #fdf6e3;
-  border-right: 1px solid #657b83;
-}
-
-#wiki #contents {
-	border-right : 0;
-	border-left: 1px solid #657b83;
+  background: $base3;
+  border: 1px solid $base00;
 }
  
 #contents p {
@@ -680,7 +701,7 @@ footer styles
 ------------------------------ */
 
 #footercontainer {
-  background-color : #eee8d5;
+  background-color : $base2;
 }
 
 #footercontent {
@@ -689,8 +710,8 @@ footer styles
 }
 
 #footer {
-  padding : 20px 0 20px 0;
-  color : #657b83;
+  padding : 20px 20px 20px 20px;
+  color : $base00;
 }
 
 
@@ -707,15 +728,15 @@ div.modalDialog {
   width: 700px;
   height: 90%;
   border: 1px solid #444444;
-  background-color: #eee8d5;
+  background-color: $base2;
   overflow: auto;
   padding : 10px;        
-  -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,10);  
-  -moz-box-shadow: 0px 0px 20px rgba(0,0,0,10);  
-  box-shadow: 0px 0px 20px rgba(0,0,0,10);  
+  -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,1);  
+  -moz-box-shadow: 0px 0px 20px rgba(0,0,0,1);  
+  box-shadow: 0px 0px 20px rgba(0,0,0,1);  
    border-radius: 3px;
   -moz-border-radius: 3px;
-  -webkit-border-radius: 3px; */
+  -webkit-border-radius: 3px;
 }
 
 /* modal dialog */
