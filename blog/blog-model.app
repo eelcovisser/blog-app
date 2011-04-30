@@ -123,6 +123,10 @@ section posts
 		modified  :: DateTime (default=now())
 		deleted   :: Bool (default=false)
 		authors   -> Set<User>
+		
+		function update() {
+		  if(extended == null) { extended := ""; }
+		}
 
 		extend function setTitle(x: String) {
 		  urlTitle := keyFromName(x);
@@ -131,6 +135,7 @@ section posts
 		  key := n + "";
 		}
 		function modified() {
+		  update();
 		  var date := now();
 		  if(!public) { created := date; }
 		  modified := date;
@@ -148,7 +153,7 @@ section posts
     function public(): Bool { 
     	if(public == null) { public := false; } return public; 
     }
-    function publish() { 
+    function publish() {
     	public := true; 
     	deleted := false;
     	created := now();

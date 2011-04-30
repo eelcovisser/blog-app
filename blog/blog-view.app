@@ -293,6 +293,10 @@ section posts
     <div class="postContent">output(p.content)</div>
   }
   
+  define postExtendedContent(p: Post) {
+    <div class="postContent">output(p.extended)</div>
+  }
+  
   define postInIndex(p: Post) {
     <div class="postInIndex">
       <h1>permalink(p){ output(p.title) }</h1>
@@ -304,7 +308,7 @@ section posts
     <div class="postInSearch">
       <h1>permalink(p){ output(p.title) }</h1>
       postByLine(p)
-      par{ output(abbreviate(p.content,250)) }
+      par{ output(abbreviate(p.content,250) as WikiText) }
     </div>
   }
   
@@ -313,7 +317,7 @@ section posts
       <h1>permalink(p){ output(p.title) }</h1>
       postByLine(p)
       postContent(p)
-      //permalink(p){ "Read more" }
+      permalink(p){ "Read more" }
     </div>
   }
 
@@ -333,6 +337,7 @@ section post
 	    <h1>output(p.title)</h1>
 	    postByLine(p)
 	    postContent(p) 
+	    postExtendedContent(p)
 	    postActions(p)
 	  </div>
   }
@@ -345,6 +350,7 @@ section post
       form{
         formEntry("Title") { input(p.title) }
         formEntry("Content") { input(p.content) } 
+        formEntry("More Content") { input(p.extended) } 
         formEntry("Created") { input(p.created) }
         submit save() { "Save" }
       }
