@@ -110,6 +110,7 @@ section update account
   }
   
   define authorizeUser(u: User) {
+    action authorize() { return profile(u); }
     <h1>"Authorize User"</h1>
     form{
       formEntry("May Comment"){
@@ -121,7 +122,7 @@ section update account
       formEntry("Is Administrator"){
         input(u.isAdministrator)
       }
-      submit action{ return profile(u); } { "Authorize" }
+      submit authorize() { "Authorize" }
     }
   }
   
