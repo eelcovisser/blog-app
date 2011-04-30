@@ -6,10 +6,10 @@ section blog
 
 	entity Blog {
 		key   :: String (id)
-		title :: String (searchable)
+		title :: String (searchable) 
 		main  :: Bool (default=false)
 		
-		about   :: WikiText
+		about   :: WikiText      
 		contact :: WikiText
 		links   :: WikiText
 		
@@ -117,6 +117,7 @@ section posts
 		urlTitle  :: String 
 		title     :: String (searchable)
 		content   :: WikiText (searchable)
+		extended  :: WikiText (searchable)
 		public    :: Bool (default=false)
 		created   :: DateTime (default=now())
 		modified  :: DateTime (default=now())

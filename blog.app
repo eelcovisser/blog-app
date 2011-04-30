@@ -6,3 +6,6 @@ imports lib/lib
 imports entity/entity
 imports wiki/wiki-view
 imports file/file-view
+
+imports blog/serendipity
+

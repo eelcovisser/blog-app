@@ -159,6 +159,25 @@ section blog front page
     blog(mainBlog(), index)
   }
   
+  // define page blog(arg1: String, arg2: String, arg3: String) {
+  //   var index: Int
+  //   init{
+  //     log("arg1: " + arg1);
+  //     log("arg2: " + arg2);
+  //     log("arg3: " + arg3);
+  //     index := arg1.parseInt();
+  //     if(index == null) { 
+  //       var postIndex := legacyPermaLink(arg3);
+  //       if(postIndex == null) { 
+  //         index := 1; 
+  //       } else {
+  //         goto post(postIndex,"");
+  //       }
+  //     }
+  //   }
+  //   blog(mainBlog(), index)
+  // }
+  
   define page other(b: Blog, index: Int) {
   	init{ if(b.main) { goto blog(1); } }
     blog(b, index) 

@@ -74,3 +74,7 @@ module lib/datetime
     }
     return days;
   }
+  
+  native class java.sql.Timestamp as Timestamp : DateTime {
+    constructor(Int)
+  }
