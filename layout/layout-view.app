@@ -26,6 +26,10 @@ section main template
     </div>
   }
   
+  define clear() { 
+    <div class="clear" />
+  }
+  
   define pageheader() {
     <div class="title">
       navigate root(){ output(application.title) } 
