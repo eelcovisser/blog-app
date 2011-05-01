@@ -579,7 +579,13 @@ span.indexEntryInactive {
 span.indexEntryCurrent {   
 	border : 1px solid $base00; 
 	background : $base00;
-  color : $base2;
+  color : $base2;  
+}
+span.indexEntryGap { 
+  border : 1px solid #bbbbbb;
+  color : #bbbbbb;
+  padding : 4px;
+  margin : 0 6px 0 0;
 }
 span.indexEntryActive a {  
 	border : 1px solid $base00;

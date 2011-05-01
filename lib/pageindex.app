@@ -29,24 +29,20 @@ module lib/pageindex
 	    }
     }
   }
-  
-  function boolLog(x: String): Bool { log(x); return true; }
-  
-  function showIndex(i: Int, idx: Int, pages: Int, max: Int, middle: Int, end: Int): Bool {
-    log("i:" + i + " idx:" + idx + " pages:" + pages + " max:" + max + " middle: " + middle + " end:" + end);
     
-    if(pages <= max && boolLog("a:" + i + " pages: " + pages + " max: " + max)) {
+  function showIndex(i: Int, idx: Int, pages: Int, max: Int, middle: Int, end: Int): Bool {    
+    if(pages <= max) {
       return true;
     } else { if(idx <= end + 1 + middle) {
-      return i <= end + 1 + 2 * middle && boolLog("b:" + i)
-           || i > pages - end && boolLog("e:" + i);
+      return i <= end + 1 + 2 * middle 
+           || i > pages - end;
     } else { if(idx >= pages - end + 1 - middle) { 
-      return i >= pages - end + 1 - 2 * middle && boolLog("c:" + i) 
-          || i <= end && boolLog("d:" + i);
+      return i >= pages - end + 1 - 2 * middle
+          || i <= end;
     } else { 
-      return i <= end && boolLog("d:" + i)
-          || i > pages - end && boolLog("e:" + i)
-          || (i > idx - middle && i <= idx + middle) && boolLog("f:" + i);
+      return i <= end 
+          || i > pages - end
+          || (i > idx - middle && i <= idx + middle);
     } } }
   }
   
