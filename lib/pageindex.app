@@ -30,25 +30,36 @@ module lib/pageindex
     }
   }
   
+  function boolLog(x: String): Bool { log(x); return true; }
+  
   function showIndex(i: Int, idx: Int, pages: Int, max: Int, middle: Int, end: Int): Bool {
-    return pages <= max 
-        || idx <= end + 1 + middle && i <= end + 1 + 2 * middle
-        || idx >= max - end + 1 - middle && i >= max - end + 1 - 2 * middle
-        || i <= end 
-        || i > max - end 
-        || (i > idx - middle && i <= idx + middle);
+    log("i:" + i + " idx:" + idx + " pages:" + pages + " max:" + max + " middle: " + middle + " end:" + end);
+    
+    if(pages <= max && boolLog("a:" + i + " pages: " + pages + " max: " + max)) {
+      return true;
+    } else { if(idx <= end + 1 + middle) {
+      return i <= end + 1 + 2 * middle && boolLog("b:" + i)
+           || i > pages - end && boolLog("e:" + i);
+    } else { if(idx >= pages - end + 1 - middle) { 
+      return i >= pages - end + 1 - 2 * middle && boolLog("c:" + i) 
+          || i <= end && boolLog("d:" + i);
+    } else { 
+      return i <= end && boolLog("d:" + i)
+          || i > pages - end && boolLog("e:" + i)
+          || (i > idx - middle && i <= idx + middle) && boolLog("f:" + i);
+    } } }
   }
   
   function showGap(i: Int, idx: Int, pages: Int, max: Int, middle: Int, end: Int): Bool {
     return pages > max 
         && ((i == end + 1 && idx > end + 1 + middle)
-            || (i == max - end - 1 && idx < max - end + 1 - middle));
+            || (i == pages - end - 1 && idx < pages - end + 1 - middle));
   }
   
   define pageIndex(index : Int, count : Int, perpage : Int, max: Int, end: Int) {
     var idx := max(1,index)
     var pages : Int := 1 + count/perpage
-    var middle := max - 2 * (end + 1)
+    var middle := (max - (2 * (end + 1)))/2
     container[class="pageIndex"] {
       if(pages > 1) { 
         if(idx > 1) { 
@@ -64,8 +75,9 @@ module lib/pageindex
             } else { 
               container[class="indexEntryActive"]{ pageIndexLink(i, i + "") }
             }
-          } else { if(showGap(i, idx, pages, max, middle, end)) { "..." }
-          } 
+          } else { if(showGap(i, idx, pages, max, middle, end)) { 
+              container[class="indexEntryGap"]{ "..." }
+          } }
         }
         
         if(idx < pages) { 
