@@ -150,6 +150,10 @@ pre {
   /* border : 1px dashed $base01; */
 }
 
+code {
+  font-size: 13px;
+}
+
 
 
 /* ------------------------------
@@ -220,6 +224,10 @@ div.postByline span.comments {
 }
 div.postByline span.date {
 	font-size: 16px;
+}
+
+div.postActions {
+  margin-top: 10px;
 }
 
 div.postActions a {
@@ -667,6 +675,7 @@ contents styles
   /* border : 1px solid gray; */
   background: $base3;
   border: 1px solid $base00;
+  overflow: hidden;
 }
  
 #contents p {

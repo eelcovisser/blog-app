@@ -106,7 +106,12 @@ pre {
   background: #eee8d5;
   margin: 0px;
   padding: 0px;
+  font-size: 13px;
+  overflow: auto;
   /* border : 1px dashed $base01; */ }
+
+code {
+  font-size: 13px; }
 
 /* ------------------------------
 post styles
@@ -171,6 +176,9 @@ div.postByline span.comments {
 
 div.postByline span.date {
   font-size: 16px; }
+
+div.postActions {
+  margin-top: 10px; }
 
 div.postActions a {
   color: #657b83; }
@@ -558,7 +566,8 @@ contents styles
   box-shadow: 0 0 4px rgba(0,0,0,0.2); */
   /* border : 1px solid gray; */
   background: #fdf6e3;
-  border: 1px solid #657b83; }
+  border: 1px solid #657b83;
+  overflow: hidden; }
 
 #contents p {
   line-height: 130%; }
