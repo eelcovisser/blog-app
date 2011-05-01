@@ -30,6 +30,23 @@ section data model
   	}
   }
   
+/*
+ insert into _SerendipityEntry 
+      select 
+        'SerendipityEntry' as _DISCRIMINATOR, 
+        replace(UUID(),"-","") as id, 
+        body as _body, 
+        false as _converted, 
+        extended as _extended, 
+        IF(isdraft = 'true', 1, 0) as _isdraft,
+        id as _key, 
+        from_unixtime(last_modified) as _last_modified, 
+        from_unixtime(timestamp) as _timestamp, 
+        title as _title, 
+        0 as version_opt_lock
+      from serendipity_entries;
+*/
+
   entity LegacyMap {
     oldKey :: Int
     newKey :: Int
