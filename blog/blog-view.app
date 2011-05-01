@@ -124,7 +124,7 @@ section blog table of contents
     bloglayout(b){
       <h1>"Index"</h1>
       for(p: Post in b.recentPosts(index, 10, isWriter())) { postInIndex(p) }
-      pageIndex(index, b.postCount(isWriter()), 10)
+      pageIndex(index, b.postCount(isWriter()), 10, 20, 3)
     }
     postCommentCountScript
   }
@@ -171,7 +171,7 @@ section blog front page
     define pageIndexLink(i: Int, lab: String) { link(b,i) { output(lab) } }
     bloglayout(b){
       for(p: Post in b.recentPosts(index,5,isWriter())) { postInList(p) }    
-      pageIndex(index, b.postCount(isWriter()), 5)
+      pageIndex(index, b.postCount(isWriter()), 5, 20, 3)
     }
     postCommentCountScript
   }
@@ -308,16 +308,17 @@ section posts
     <div class="postInSearch">
       <h1>permalink(p){ output(p.title) }</h1>
       postByLine(p)
-      par{ output(abbreviate(p.content,250) as WikiText) }
+      par{ output(abbreviate(p.content,500) as WikiText) }
+      clear
     </div>
-  }
+  } 
   
   define postInList(p: Post) {
     <div class="postInList">
       <h1>permalink(p){ output(p.title) }</h1>
       postByLine(p)
       postContent(p)
-      permalink(p){ "Read more" }
+      if(!isEmptyString(p.extended)) { permalink(p){ "Read more" } }
     </div>
   }
 
