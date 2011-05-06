@@ -24,20 +24,22 @@ section application administration
 section wiki pages 
 
   entity Wiki {
-    key      :: String   (id, validate(isUniqueWiki(this), "A Wiki page with that name already exists."))
-    title    :: String   (name, default=key, searchable)
-    content  :: WikiText (default= "", searchable)
+    key         :: String   (id, validate(isUniqueWiki(this), "A Wiki page with that name already exists."))
+    title       :: String   (name, default=key, searchable)
+    content     :: WikiText (default= "", searchable)
+    discussion  :: WikiText (default="", searchable)
     attachments -> Attachments
-    created  :: DateTime (default=now())
-    modified :: DateTime (default=now())
-    public   :: Bool     (default=true)
-    authors  -> Set<User> 
-    function modified()       { 
+    created     :: DateTime (default=now())
+    modified    :: DateTime (default=now())
+    public      :: Bool     (default=true)
+    authors     -> Set<User> 
+    function modified() { 
       modified := now(); 
       authors.add(principal()); 
     }
     function mayView() : Bool { return public() || loggedIn(); }
     function mayEdit() : Bool { return loggedIn() && isWriter(); }
+    function mayComment(): Bool { return loggedIn() && isCommenter(); }
     function public(): Bool {
       if(public == null) { public := true; }
       return public;
@@ -46,6 +48,7 @@ section wiki pages
     function hide() { public := false; }
     function update() { 
       if(attachments == null) { attachments := newAttachments(); }
+      if(discussion == null) { discussion := ""; }
     }
   }
   

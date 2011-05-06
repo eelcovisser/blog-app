@@ -104,14 +104,14 @@ section search
 section wiki rss
 
   define wikifeed() {
-    rssWrapper(application.title, navigate(root())){
+    rssWrapper(application.title, navigate(root()), "" as Text, now()){
       for(w: Wiki in recentlyModifiedPages(1,20,false)) {
         <item> 
           <title>output(w.title)</title>
           <link>output(link(w))</link>
           <description>output(abbreviate(w.content,2000) as WikiText)</description>
           //<description>output(w.content)</description>
-          <guid>output(link(w))</guid>
+          //<guid>output(link(w))</guid>
           <pubDate>output(w.modified)</pubDate>
        </item> 
       }
@@ -125,16 +125,29 @@ access control rules
     true
     rule action create() { isWriter() }
   }
-  rule page wiki(key : String) { true }
+  rule page wiki(key : String, tab: String) { 
+    true  
+  } 
   rule page pageindex() { loggedIn() }
+  
+  rule template showWikiDiscussion(w: Wiki) { 
+    w.mayComment()
+    rule action edit() { w.mayComment() }
+  }
+  rule template editWikiDiscussion(w: Wiki) { w.mayComment() }
   
   rule ajaxtemplate showWiki(w: Wiki) { true }
   rule ajaxtemplate editWiki(w: Wiki)  { isWriter() }
-  rule template wikiActions(w: Wiki) { isWriter() }
+  rule template wikiActions(w: Wiki) { 
+    isCommenter() 
+    rule action edit() { isWriter() }
+    rule action publish() { isWriter() }
+    rule action hide() { isWriter() }
+  }
   
 section wiki
 
-  define page wiki(key : String) {
+  define page wiki(key: String, tab: String) {
     var w := findWiki(key)
     title{ output(wikiTitle(key)) }
     wikilayout{
@@ -142,7 +155,10 @@ section wiki
         if(w == null || !w.mayView()) {
           unknownWiki(key)
         } else {
-          showWiki(w)
+          case(tab) { 
+            ""        { showWiki(w) }
+            "discuss" { showWikiDiscussion(w) }
+          }
         }
       }
     }
@@ -157,6 +173,30 @@ section wiki
     attachments(w.attachments)
   }
   
+  define ajax showWikiDiscussion(w : Wiki) { 
+    action edit() { replace(view, editWikiDiscussion(w)); }
+    <h1>output(w.title) " (Discussion)"</h1>
+    output(w.discussion)
+    block[class="wikiActions"] {
+      submitlink edit() { "[Edit]" } " "
+      navigate wiki(w.key,"") { "[Text]" }
+    }
+  }
+  
+  define ajax editWikiDiscussion(w: Wiki) {
+    action save() { 
+      w.modified();
+      replace(view, showWikiDiscussion(w)); 
+    }
+    action cancel() { replace(view, showWikiDiscussion(w)); }
+    <h1>output(w.title) " (Discussion)"</h1>
+    form{
+      input(w.discussion) 
+      submit save() { "Save" } " "
+    }
+    submit cancel() { "Cancel" }
+  }
+  
   define includeWiki(key: String) {
     var w := findCreateWiki(key);
     if(w != null) { output(w.content) }
@@ -167,12 +207,15 @@ section wiki
       w.modified();
       replace(view, showWiki(w)); 
     }
+    action cancel() { replace(view, showWiki(w)); }
+    <h1>output(w.title)</h1>
     form{
       formEntry("Key"){ input(w.key) }
       formEntry("Title"){ input(w.title) }
       formEntry("Text"){ input(w.content) }
       submit save() { "Save" }
     }
+    submit cancel() { "Cancel" }
   }
 
   define byLine(w: Wiki) {
@@ -190,6 +233,7 @@ section wiki
     action hide() { w.hide(); }
     block[class="wikiActions"]{
       submitlink edit() { "[Edit]" } " "
+      navigate wiki(w.key, "discuss") { "[Discuss]" } " "
       if(w.public()) { 
         submitlink hide() { "[Hide]" }
       } else {
@@ -201,11 +245,11 @@ section wiki
 section links to wiki page
       
   function link(w : Wiki): String {
-    return navigate(wiki(w.key)); 
+    return navigate(wiki(w.key,"")); 
   }
   
   define output(w : Wiki) {
-    navigate wiki(w.key) { if(w.title == "") { output(w.key) } else { output(w.title) } }
+    navigate wiki(w.key,"") { if(w.title == "") { output(w.key) } else { output(w.title) } }
   }
   
   define unknownWiki(key : String) {
