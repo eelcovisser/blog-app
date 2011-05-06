@@ -11,14 +11,14 @@ section blog page layout
 
   define bloglayoutAux() {
     define rssLink() {
-      <link rel="alternate" type="application/rss+xml" title="RSS" href=navigate(feed("wiki")) /> 
+      <link rel="alternate" type="application/rss+xml" title="RSS" href=navigate(feed("blog")) /> 
     }
     main{
       elements
     }
   }
 
-  define bloglayout(b: Blog) {  
+  define bloglayout(b: Blog) {
     define pageheader() { 
       <div class="title">link(b){ output(b.title) }</div>
     }
@@ -137,18 +137,25 @@ section blog rss
   	  "wiki" { wikifeed() }
   	}
   }
-
-  define blogrss(b: Blog) {
-  	rssWrapper(b.title, link(b,1)){
+ 
+  define blogrss(b: Blog) { 
+  	rssWrapper(b.title, link(b,1), b.description, b.modified){
   		for(p: Post in b.recentPosts(1,20,false)) {
   	    <item> 
           <title>output(p.title)</title>
           <link>output(permalink(p))</link>
-          //<description>output(abbreviate(p.content,500))</description>
-          <description>output(p.content)</description>
-          <guid>output(permalink(p))</guid>
-          <pubDate>output(p.created)</pubDate>
-       </item>
+          <description>
+            if(!isEmptyString(p.description)) { 
+              output(p.description)
+            } else {
+              output(p.content)
+            }
+          </description>
+          //<author>email address (Name)</author>
+          //<guid>output(permalink(p))</guid>
+          <pubDate>rssDateTime(p.created)</pubDate>
+          <source url=link(b,1)>output(b.title)</source>
+       </item> 
   		}
   	}
   }
@@ -158,8 +165,6 @@ section blog front page
   define page blog(index: Int) {
     blog(mainBlog(), index)
   }
-  
-
   
   define page other(b: Blog, index: Int) {
   	init{ if(b.main) { goto blog(1); } }
@@ -350,6 +355,9 @@ section post
       postByLine(p)
       form{
         formEntry("Title") { input(p.title) }
+        formEntry("Description (for use in summaries)"){ 
+          input(p.description)[class="description"] 
+        }
         formEntry("Content") { input(p.content) } 
         formEntry("More Content") { input(p.extended) } 
         formEntry("Created") { input(p.created) }
@@ -357,7 +365,7 @@ section post
       }
     </div>
   }
-    
+
   define postActions(p: Post) {    
   	action edit() { replace(view, postEdit(p)); }
     action remove() { var b := p.blog; if(p.remove()) { return other(b,1); } }

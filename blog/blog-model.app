@@ -12,9 +12,15 @@ section blog
 		about   :: WikiText      
 		contact :: WikiText
 		links   :: WikiText
+		description :: Text // for summaries, RSS
 		
 		authors -> Set<User>
 		
+		modified :: DateTime (default=now())
+		
+		function modified() { 
+		  modified := now();
+		}
 		function rename(x: String) {
 		  var k := keyFromName(x);
 		  assert(findBlog(k) == null, "that name is already taken");
@@ -111,21 +117,24 @@ section posts
 	}
 	
 	entity Post {
-	  number    :: Int
-		key       :: String (id)
-		blog      -> Blog
-		urlTitle  :: String 
-		title     :: String (searchable)
-		content   :: WikiText (searchable)
-		extended  :: WikiText (searchable)
-		public    :: Bool (default=false)
-		created   :: DateTime (default=now())
-		modified  :: DateTime (default=now())
-		deleted   :: Bool (default=false)
-		authors   -> Set<User>
+	  number      :: Int
+		key         :: String (id)
+		blog        -> Blog
+		urlTitle    :: String 
+		title       :: String (searchable)
+		description :: Text (searchable)
+		content     :: WikiText (searchable)
+		extended    :: WikiText (searchable)
+		public      :: Bool (default=false)
+		created     :: DateTime (default=now())
+		modified    :: DateTime (default=now())
+		deleted     :: Bool (default=false)
+		authors     -> Set<User>
 		
 		function update() {
 		  if(extended == null) { extended := ""; }
+		  if(description == null) { description := ""; }
+		  if(public == null) { public := false; }
 		}
 
 		extend function setTitle(x: String) {
@@ -139,6 +148,7 @@ section posts
 		  var date := now();
 		  if(!public) { created := date; }
 		  modified := date;
+      blog.modified();
 		}
 		function isAuthor(): Bool {
 		  return principal() in authors || blog.isAuthor();
@@ -147,11 +157,11 @@ section posts
 			return isAuthor();
 		}
     function mayView(): Bool { 
-      if(public == null) { public := false; }
+      update();
       return public || mayEdit();
     }
     function public(): Bool { 
-    	if(public == null) { public := false; } return public; 
+    	update(); return public; 
     }
     function publish() {
     	public := true; 
