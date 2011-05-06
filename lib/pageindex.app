@@ -29,6 +29,49 @@ module lib/pageindex
 	    }
     }
   }
+  
+  define pageIndex(index : Int, count : Int, perpage : Int, max: Int, end: Int) {
+    var idx := max(1,index)
+    var pages : Int := 1 + (count - 1)/perpage
+    var middle := (max - (2 * (end + 1)))/2
+    var intervals : List<List<Int>>
+    init{
+      if(pages <= max) {
+        intervals := [[1,pages]];
+      } else { if(idx <= end + 2 + middle) {
+          intervals := [[1, end + 1 + 2 * middle], [pages - end + 1, pages]];
+      } else { if(idx >= pages - end - middle) {
+        intervals := [[1,end], [pages - end - 2 * middle, pages]];
+      } else {
+        intervals := [[1, end], [idx - middle, idx + middle - 1], [pages - end + 1, pages]];
+      }}}
+    }
+    if(pages > 1) { 
+      container[class="pageIndex"] {
+        if(idx > 1) { 
+          container[class="indexEntryActive"]{ pageIndexLink(idx-1, "Previous") }
+        } else { 
+          container[class="indexEntryInactive"]{ "Previous" }
+        }
+        for(iv : List<Int> in intervals) {
+	        for(i : Int from iv.get(0) to iv.get(1) + 1) { 
+	          if(i == idx) {
+	            container[class="indexEntryCurrent"]{ output(i) }
+	          } else { 
+	            container[class="indexEntryActive"]{ pageIndexLink(i, i + "") }
+	          }
+	        }
+        } separated-by {
+          container[class="indexEntryGap"]{ "..." }
+        }
+        if(idx < pages) { 
+          container[class="indexEntryActive"]{ pageIndexLink(idx+1,"Next") }
+        } else { 
+          container[class="indexEntryInactive"]{ "Next" }
+        }
+      }
+    }
+  }
     
   function showIndex(i: Int, idx: Int, pages: Int, max: Int, middle: Int, end: Int): Bool {    
     if(pages <= max) {
@@ -52,7 +95,7 @@ module lib/pageindex
             || (i == pages - end - 1 && idx < pages - end + 1 - middle));
   }
   
-  define pageIndex(index : Int, count : Int, perpage : Int, max: Int, end: Int) {
+  define pageIndexOld(index : Int, count : Int, perpage : Int, max: Int, end: Int) {
     var idx := max(1,index)
     var pages : Int := 1 + count/perpage
     var middle := (max - (2 * (end + 1)))/2
