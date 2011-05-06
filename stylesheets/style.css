@@ -221,11 +221,6 @@ div.attachmentModified {
 /* ------------------------------
 forms
 ------------------------------ */
-textarea {
-  width: 100%;
-  height: 40em;
-  resize: vertical; }
-
 form {
   display: inline; }
 
@@ -234,10 +229,15 @@ select {
   padding: 1px; }
 
 textarea {
+  width: 100%;
+  height: 40em;
+  resize: vertical;
   border: 1px solid #cccccc;
   padding: 3px;
   margin-bottom: .5em;
-  background: #eee8d5; }
+  background: #eee8d5;
+  font-size: 15px;
+  font-family: Courier; }
 
 input {
   border: 1px solid #cccccc;
@@ -598,6 +598,9 @@ contents styles
   padding: 2px;
   border: 1px solid #9FA41D;
   margin: 0 0 10px 10px; }
+
+textarea.description {
+  height: 5em; }
 
 /* ------------------------------
 footer styles
