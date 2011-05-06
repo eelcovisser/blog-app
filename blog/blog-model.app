@@ -80,8 +80,12 @@ section posts
   var lastPost := LastPost{}
 
 	extend entity Blog {
-	  function recentPosts(index: Int, n: Int, includePrivate: Bool): List<Post> {
-	    if(includePrivate && showHiddenPosts()) {
+	  function recentPosts(index: Int, n: Int, includePrivate: Bool, drafts: Bool): List<Post> {
+	    if(drafts) {
+	      return select p from Post as p 
+                where p.blog = ~this and p.public is false
+             order by p.modified desc limit n*(index-1),n;
+	    } else { if(includePrivate && showHiddenPosts()) {
 		    return select p from Post as p 
 		            where p.blog = ~this 
 		         order by p.created desc limit n*(index-1),n;
@@ -89,18 +93,24 @@ section posts
 	      return select p from Post as p 
 	              where p.blog = ~this and p.public is true
 	           order by p.created desc limit n*(index-1),n;
-      }
+      } }
 	  }
 	  postCount :: Int (default=0)
 	  postPublicCount :: Int (default=0)
-	  function postCount(includePrivate: Bool): Int {
+	  draftCount :: Int (default=0)
+	  function postCount(includePrivate: Bool, drafts: Bool): Int {
 	    if(postCount == null) {
 	      postCount := (select count(p) from Post as p where p.blog = ~this);
 	    }
 	    if(postPublicCount == null) {
 	      postPublicCount := (select count(p) from Post as p where p.blog = ~this and p.public is true);
 	    }
-	    if(includePrivate && showHiddenPosts()) { return postCount; } else { return postPublicCount; }
+	    if(draftCount == null) {
+	      draftCount := (select count(p) from Post as p where p.blog = ~this and p.public is false);
+	    }
+	    if(drafts) { return draftCount; }
+	    if(includePrivate && showHiddenPosts()) { return postCount; } 
+	    else { return postPublicCount; }
 	  }
 	  function addPost(): Post {
 	    var p := Post{ 
@@ -111,7 +121,7 @@ section posts
 	    authors.add(principal());
 	    p.save();
 	    postCount := null;
-	    postPublicCount := null;
+	    postPublicCount := null; 
 	    return p;
 	  }
 	}

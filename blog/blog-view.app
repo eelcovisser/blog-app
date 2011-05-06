@@ -28,7 +28,7 @@ section blog page layout
         list{
           listitem{ navigate about() { "About" } }
           listitem{ navigate contact() { "Contact" } }
-          listitem{ navigate index(1) { "Index" } }
+          listitem{ navigate index(1,"") { "Index" } }
           listitem{ navigate feed("blog") { "RSS" } }
         }
       }
@@ -44,7 +44,7 @@ section blog page layout
   define recentPosts(b: Blog) {
   	sidebarSection{ 
       <h2>"Recent Posts"</h2>
-      list{ for(p: Post in b.recentPosts(1,10,isWriter())){ listitem{ recentPost(p) } } }
+      list{ for(p: Post in b.recentPosts(1,10,isWriter(),false)){ listitem{ recentPost(p) } } }
     }
   }
   
@@ -106,32 +106,42 @@ section search
   }
   
   define page search(b: Blog, query: String) {
-  	bloglayout(b){ 
+  	bloglayout(b){
   		for(p: Post in searchPost(query,30)) { postInSearch(p) }
   	}
     postCommentCountScript
   }
   
+access control rules
+
+  rule template indexBlog(b: Blog, index: Int, tab: String) {
+    tab == "" 
+    || tab == "drafts" && b.isAuthor()
+  }
+  
 section blog table of contents
 
-  define page index(index: Int) {
-    indexBlog(mainBlog(),index)
+  define page index(index: Int, tab: String) {
+    indexBlog(mainBlog(),index, tab)
   }
   
-  define indexBlog(b: Blog, index: Int) {
+  define indexBlog(b: Blog, index: Int, tab: String) {
+    init{ 
+      if(tab == "drafts" && !b.isAuthor()) { return index(index,""); }
+    }
   	title{ "Index " output(b.title) }
-    define pageIndexLink(i: Int, lab: String) { navigate index(i) { output(lab) } }
+    define pageIndexLink(i: Int, lab: String) { navigate index(i, tab) { output(lab) } }
     bloglayout(b){
-      <h1>"Index"</h1>
-      for(p: Post in b.recentPosts(index, 10, isWriter())) { postInIndex(p) }
-      pageIndex(index, b.postCount(isWriter()), 10, 20, 3)
+      <h1> if(tab == "drafts") { "Drafts" } else { "Index" } </h1>
+      for(p: Post in b.recentPosts(index, 10, isWriter(), tab == "drafts" && b.isAuthor())) { postInIndex(p) }
+      pageIndex(index, b.postCount(isWriter(),tab == "drafts"), 10, 20, 3)
     }
     postCommentCountScript
-  }
-  
+  } 
+    
 section blog rss
 
-  define page feed(type: String) {
+  define page feed(type: String) { 
     case(type) {
   	  "blog" { blogrss(mainBlog()) }
   	  "wiki" { wikifeed() }
@@ -139,8 +149,8 @@ section blog rss
   }
  
   define blogrss(b: Blog) { 
-  	rssWrapper(b.title, link(b,1), b.description, b.modified){
-  		for(p: Post in b.recentPosts(1,20,false)) {
+  	rssWrapper(b.title, link(b,1), b.description, b.modified){ 
+  		for(p: Post in b.recentPosts(1,20,false,false)) {
   	    <item> 
           <title>output(p.title)</title>
           <link>output(permalink(p))</link>
@@ -175,8 +185,8 @@ section blog front page
     title{ output(b.title) " | page " output(index) }
     define pageIndexLink(i: Int, lab: String) { link(b,i) { output(lab) } }
     bloglayout(b){
-      for(p: Post in b.recentPosts(index,5,isWriter())) { postInList(p) }    
-      pageIndex(index, b.postCount(isWriter()), 5, 20, 3)
+      for(p: Post in b.recentPosts(index,5,isWriter(),false)) { postInList(p) }    
+      pageIndex(index, b.postCount(isWriter(), false), 5, 20, 3)
     }
     postCommentCountScript
   }
@@ -208,6 +218,7 @@ section blog admin
       list{
 	      listitem{ newPost(b) }
 	      listitem{ showHiddenPosts(b) }
+	      listitem{ navigate index(1,"drafts") { "Drafts" } }
 	      listitem {
 	        if(b.main) { 
 	          navigate blogadminmain() { "Blog Configuration" }
