@@ -22,6 +22,12 @@ html * {
     color-profile: sRGB;
     rendering-intent: auto;
 } */
+/* -------------------------------
+fonts
+--------------------------------- */
+/* $headerFont : 'News Cycle', sans serif; */
+/* font-family: georgia, times, "times new roman", serif; */
+/* font-family: Arial, sans-serif; */
 /* ------------------------------
 global styles
 ------------------------------ */
@@ -33,9 +39,7 @@ html {
 body {
   margin: 0;
   padding: 0;
-  /* font-family: georgia, times, "times new roman", serif; */
-  /* font-family: Arial, sans-serif; */
-  font-family: Garamond, serif;
+  font-family: Garamond, Georgia, serif;
   font-size: 16px;
   text-align: center;
   color: #073642;
@@ -72,13 +76,15 @@ headers
 ------------------------------ */
 h1 {
   font-size: 20px;
+  font-family: "Cabin Sketch", "Cabin", Verdana, sans serif;
   margin: 0 0 20px;
   color: #cb4b16; }
 
 h2 {
   font-size: 18px;
   margin: 20px 0 10px;
-  color: #cb4b16; }
+  color: #cb4b16;
+  font-family: "Cabin Sketch", "Cabin", Verdana, sans serif; }
 
 h2 a {
   text-decoration: none;
@@ -88,7 +94,8 @@ h3 {
   color: #657b83;
   font-size: 16px;
   margin: 20px 0 10px;
-  color: #cb4b16; }
+  color: #cb4b16;
+  font-family: "Cabin Sketch", "Cabin", Verdana, sans serif; }
 
 ul {
   margin: 0 0 0 20px;
@@ -105,13 +112,15 @@ code
 pre {
   background: #eee8d5;
   margin: 0px;
-  padding: 0px;
+  padding: 10px 0 10px 0;
   font-size: 13px;
   overflow: auto;
+  font-family: "Droid Sans Mono", Courier, monospace, serif;
   /* border : 1px dashed $base01; */ }
 
 code {
-  font-size: 13px; }
+  font-size: 13px;
+  font-family: "Droid Sans Mono", Courier, monospace, serif; }
 
 /* ------------------------------
 post styles
@@ -237,7 +246,7 @@ textarea {
   margin-bottom: .5em;
   background: #eee8d5;
   font-size: 15px;
-  font-family: Courier; }
+  font-family: "Droid Sans Mono", Courier, monospace, serif; }
 
 input {
   border: 1px solid #cccccc;
@@ -366,7 +375,8 @@ background: -moz-linear-gradient(top,  #444444,  #333333);
 
 div.title {
   font-size: 200%;
-  padding: 20px 18px 20px 18px; }
+  padding: 20px 18px 20px 18px;
+  font-family: "Cabin Sketch", Verdana, sans serif; }
 
 div.title a {
   color: #eee8d5;

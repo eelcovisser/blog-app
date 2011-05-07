@@ -42,7 +42,24 @@ html * {
     rendering-intent: auto;
 } */
 
+/* -------------------------------
+fonts
+--------------------------------- */
 
+/* $headerFont : 'News Cycle', sans serif; */
+
+$headerFont : 'Cabin Sketch', 'Cabin', Verdana, sans serif;
+
+$titleFont : 'Cabin Sketch', Verdana, sans serif;
+
+$codeFont : 'Droid Sans Mono', Courier, monospace, serif;
+
+$textFont: Garamond, Georgia, serif;
+  
+/* font-family: georgia, times, "times new roman", serif; */
+  
+/* font-family: Arial, sans-serif; */
+  
 /* ------------------------------
 global styles
 ------------------------------ */
@@ -54,11 +71,7 @@ html {
 body {
 	margin: 0;
 	padding: 0;
-	/* font-family: georgia, times, "times new roman", serif; */
-	
-  /* font-family: Arial, sans-serif; */
-  
-  font-family: Garamond, serif;
+  font-family: $textFont;
 	font-size: 16px;
 	text-align: center;
 	color: $base02;
@@ -104,6 +117,7 @@ headers
 
 h1 {
 	font-size: 20px;
+	font-family: $headerFont;
   margin: 0 0 20px;
   color: $orange;
 }
@@ -112,6 +126,7 @@ h2 {
 	font-size: 18px;
   margin: 20px 0 10px;
   color: $orange;
+  font-family: $headerFont;
 }
 
 h2 a {
@@ -124,6 +139,7 @@ h3 {
 	font-size: 16px ;
   margin: 20px 0 10px;
   color: $orange;
+  font-family: $headerFont;
 }
 
 ul {
@@ -144,14 +160,16 @@ code
 pre {
 	background: $base2;
   margin : 0px;
-  padding : 0px;
+  padding : 10px 0 10px 0;
   font-size: 13px;
   overflow: auto;
+  font-family: $codeFont;
   /* border : 1px dashed $base01; */
 }
 
 code {
   font-size: 13px;
+  font-family: $codeFont;
 }
 
 
@@ -301,7 +319,7 @@ textarea {
   margin-bottom : .5em;
   background: $base2;
   font-size : 15px;
-  font-family: Courier;
+  font-family: $codeFont;
 }
 input { 
   border : 1px solid #cccccc;
@@ -453,6 +471,7 @@ header styles
 div.title {
 	font-size: 200%;
 	padding: 20px 18px 20px 18px;
+	font-family: $titleFont;
 }
 div.title a {
 	color: $base2;

@@ -3,6 +3,27 @@ module layout/layout-view
 section main template
 
   define main() {
+    // http://www.google.com/webfonts
+    // sans serif
+    includeCSS("http://fonts.googleapis.com/css?family=Cabin+Sketch:bold")
+    // monospace
+    includeCSS("http://fonts.googleapis.com/css?family=Droid+Sans+Mono")
+    // sans serif
+    includeCSS("http://fonts.googleapis.com/css?family=Cabin")
+    
+    // sans serif
+    // includeCSS("http://fonts.googleapis.com/css?family=Expletus+Sans")
+    
+    // serif
+    // includeCSS("http://fonts.googleapis.com/css?family=Philosopher")
+    
+    // typewriter
+    // includeCSS("http://fonts.googleapis.com/css?family=Special+Elite")
+    // includeCSS("http://fonts.googleapis.com/css?family=Anonymous+Pro")
+    
+    // script
+    //includeCSS("http://fonts.googleapis.com/css?family=Walter+Turncoat")
+    
     includeCSS("style.css")
     includeHead(rendertemplate(rssLink()))
     includeHead(rendertemplate(analytics))
