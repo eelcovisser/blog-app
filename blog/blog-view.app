@@ -19,6 +19,7 @@ section blog page layout
   }
 
   define bloglayout(b: Blog) {
+    init{ b.update(); }
     define pageheader() { 
       <div class="title">link(b){ output(b.title) }</div>
     }
@@ -149,7 +150,7 @@ section blog rss
   }
  
   define blogrss(b: Blog) { 
-  	rssWrapper(b.title, link(b,1), b.description, b.modified){ 
+  	rssWrapper(b.title, link(b,1), b.description as Text, b.modified){ 
   		for(p: Post in b.recentPosts(1,20,false,false)) {
   	    <item> 
           <title>output(p.title)</title>
@@ -253,6 +254,7 @@ section blog admin
         formEntry("Blog Key"){ input(b.key) }
         formEntry("Blog Title"){ input(b.title) }
         formEntry("Blog Main"){ input(b.main) }
+        formEntry("Description"){ input(b.description) }
         formEntry("About"){ input(b.about) }
         formEntry("Contact"){ input(b.contact) }
         formEntry("Links"){ input(b.links) }
@@ -341,6 +343,7 @@ section posts
 section post
 
   define page post(p: Post, title: String) {
+    init{ p.update(); }
     title{ output(p.title) }
     bloglayout(p.blog){
       placeholder view { postView(p) }
@@ -355,7 +358,7 @@ section post
 	    postByLine(p)
 	    postContent(p) 
 	    postExtendedContent(p)
-	    postActions(p)
+	    postActions(p) 
 	  </div>
   }
 

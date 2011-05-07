@@ -12,12 +12,14 @@ section blog
 		about   :: WikiText      
 		contact :: WikiText
 		links   :: WikiText
-		description :: Text // for summaries, RSS
+		description :: WikiText // for summaries, RSS
 		
 		authors -> Set<User>
 		
 		modified :: DateTime (default=now())
-		
+		function update() {
+		  if(description == null) { description := ""; }
+		}
 		function modified() { 
 		  modified := now();
 		}
@@ -132,7 +134,7 @@ section posts
 		blog        -> Blog
 		urlTitle    :: String 
 		title       :: String (searchable)
-		description :: Text (searchable)
+		description :: WikiText (searchable)
 		content     :: WikiText (searchable)
 		extended    :: WikiText (searchable)
 		public      :: Bool (default=false)
