@@ -169,7 +169,7 @@ section blog rss
       //<author>email address (Name)</author>
       <guid>output(permalink(p) as String)</guid>
       <pubDate>rssDateTime(p.created)</pubDate>
-      <source url=link(b,1)>output(b.title)</source>
+      <source url=link(p.blog,1)>output(p.blog.title)</source>
     </item>
   }
 
