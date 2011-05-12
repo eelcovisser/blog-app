@@ -47,8 +47,8 @@ module lib/pageindex
   }
   
   define pageIndex(index : Int, count : Int, perpage : Int, max: Int, end: Int) {
-    var idx := max(1,index)
     var pages : Int := 1 + (count - 1)/perpage
+    var idx := min(max(1,index), pages)
     var intervals : List<List<Int>> := pageIndexIntervals(idx, count, perpage, max, end)
     if(pages > 1) { 
       container[class="pageIndex"] {
