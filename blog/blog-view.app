@@ -15,7 +15,7 @@ section blog page layout
     }
     main{
       elements
-    }
+    }  
   }
 
   define bloglayout(b: Blog) {
@@ -151,24 +151,26 @@ section blog rss
  
   define blogrss(b: Blog) { 
   	rssWrapper(b.title, link(b,1), b.description as Text, b.modified){ 
-  		for(p: Post in b.recentPosts(1,20,false,false)) {
-  	    <item> 
-          <title>output(p.title)</title>
-          <link>output(permalink(p))</link>
-          <description>
-            if(!isEmptyString(p.description)) { 
-              output(p.description)
-            } else {
-              output(p.content)
-            }
-          </description>
-          //<author>email address (Name)</author>
-          //<guid>output(permalink(p))</guid>
-          <pubDate>rssDateTime(p.created)</pubDate>
-          <source url=link(b,1)>output(b.title)</source>
-       </item> 
-  		}
+  		for(p: Post in b.recentPosts(1,20,false,false)) { rssPost(p) }
   	}
+  }
+  
+  define rssPost(p: Post) {
+    <item> 
+      <title>output(p.title)</title>
+      <link>output(permalink(p) as String)</link>
+      <description>
+        if(!isEmptyString(p.description)) { 
+          output(p.description)
+        } else {
+          output(p.content)
+        }
+      </description>
+      //<author>email address (Name)</author>
+      <guid>output(permalink(p) as String)</guid>
+      <pubDate>rssDateTime(p.created)</pubDate>
+      <source url=link(b,1)>output(b.title)</source>
+    </item>
   }
 
 section blog front page
@@ -210,7 +212,7 @@ access control rules
   rule template showHiddenPosts(b: Blog) { 
     loggedIn()
   }
-   
+
 section blog admin
 
   define blogAdmin(b: Blog) { 
