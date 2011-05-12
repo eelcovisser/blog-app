@@ -1,0 +1,2 @@
+module bookmarks/bookmarks-model
+
