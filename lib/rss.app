@@ -12,7 +12,7 @@ section RSS
   }
   
   define rssDateTime(d: DateTime) {
-    output(d.format("EEE, dd MMM yyyy hh:mm:ss zzz"))
+    output(d.format("EEE, dd MMM yyyy hh:mm:ss ZZZ"))
   }
   
   // see http://www.rssboard.org/rss-specification for documentation
@@ -20,11 +20,12 @@ section RSS
   define rssWrapper(title: String, url: String, desc: Text, pubDate: DateTime) {
     var now := now()
     mimetype("application/rss+xml")
-    <rss version="2.0">
+    <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
       <channel> 
-        <title>output(title)</title>
+        <atom:link href=url rel="self" type="application/rss+xml" />
         <link>output(url)</link>
-        if(!isEmptyString(desc)){ <description>output(desc)</description> }
+        <title>output(title)</title>
+        <description>output(desc)</description>
         if(pubDate != null) { <pubDate>rssDateTime(pubDate)</pubDate> }
         <docs>"http://www.rssboard.org/rss-specification"</docs>
         //<language></language>
