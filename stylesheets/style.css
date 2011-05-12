@@ -75,13 +75,13 @@ a:active {
 headers
 ------------------------------ */
 h1 {
-  font-size: 20px;
+  font-size: 22px;
   font-family: "Cabin Sketch", "Cabin", Verdana, sans serif;
   margin: 0 0 20px;
   color: #cb4b16; }
 
 h2 {
-  font-size: 18px;
+  font-size: 20px;
   margin: 20px 0 10px;
   color: #cb4b16;
   font-family: "Cabin Sketch", "Cabin", Verdana, sans serif; }
@@ -92,7 +92,7 @@ h2 a {
 
 h3 {
   color: #657b83;
-  font-size: 16px;
+  font-size: 18px;
   margin: 20px 0 10px;
   color: #cb4b16;
   font-family: "Cabin Sketch", "Cabin", Verdana, sans serif; }
