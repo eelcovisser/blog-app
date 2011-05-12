@@ -76,7 +76,8 @@ section wiki pages
       return select w from Wiki as w 
            order by w.modified desc limit n*(index-1),n;
     } else {
-      return select w from Wiki as w where w.public is true
+      return select w from Wiki as w 
+              where w.public is true
            order by w.modified desc limit n*(index-1),n;
     }
   }
