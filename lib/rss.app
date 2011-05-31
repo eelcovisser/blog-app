@@ -1,4 +1,4 @@
-module lib/rss
+module lib/rss 
 
 section RSS
   
@@ -17,13 +17,13 @@ section RSS
   
   // see http://www.rssboard.org/rss-specification for documentation
   
-  define rssWrapper(title: String, url: String, desc: Text, pubDate: DateTime) {
+  define rssWrapper(title: String, url: String, feedURL: String, desc: Text, pubDate: DateTime) {
     var now := now()
     mimetype("application/rss+xml")
     <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
       <channel> 
         <atom:link href=url rel="self" type="application/rss+xml" />
-        <link>output(url)</link>
+        <link>output(feedURL)</link>
         <title>output(title)</title>
         <description>output(desc)</description>
         if(pubDate != null) { <pubDate>rssDateTime(pubDate)</pubDate> }

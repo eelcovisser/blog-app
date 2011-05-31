@@ -1,11 +1,11 @@
-module wiki/wiki-view
-
+module wiki/wiki-view  
+  
 imports wiki/wiki-model
-
+ 
 // todo: comments
 // todo: attachments
 
-access control rules
+access control rules 
 
   rule page admin() { isAdministrator() }
   
@@ -20,12 +20,12 @@ section application
     init{ application.update(); }
     main{
       form{
-        formEntry("Title"){ 
+        formEntry("Title"){  
           input(application.title)  }
         formEntry("Email"){ 
           input(application.email)  }
         formEntry("Disqus Forum Id"){ 
-          input(application.disqusForumId) }
+          input(application.disqusForumId) } 
         formEntry("Analytics On") {
           input(application.analyticsOn)
         }
@@ -104,7 +104,7 @@ section search
 section wiki rss
 
   define wikifeed() {
-    rssWrapper(application.title, navigate(root()), "" as Text, now()){
+    rssWrapper(application.title, navigate(root()), navigate(feed("wiki")), "" as Text, now()){
       for(w: Wiki in recentlyModifiedPages(1,20,false)) {
         <item> 
           <title>output(w.title)</title>
