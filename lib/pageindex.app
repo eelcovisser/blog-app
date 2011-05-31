@@ -50,6 +50,10 @@ module lib/pageindex
     var pages : Int := 1 + (count - 1)/perpage
     var idx := min(max(1,index), pages)
     var intervals : List<List<Int>> := pageIndexIntervals(idx, count, perpage, max, end)
+    // todo: redirect to normalized index page
+    // init{
+    //   if(index > pages) { goto ; }
+    // }
     if(pages > 1) { 
       container[class="pageIndex"] {
         if(idx > 1) { 
