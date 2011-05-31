@@ -57,7 +57,7 @@ section authentication
 
 section access denied
 
-  define override page accessDenied() {
+  define page accessDenied() {
     init{ 
       message("That page does not exist, or you don't have permission to access it.");
       return root();
