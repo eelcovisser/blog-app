@@ -3,6 +3,18 @@ application mobile
 import mobl::ui::generic
 
 screen root() {
-	header("mobile blog")
-	"test"
+	var title = "blog"
+	header(title)
+	var blog = async(Blog.data())
+	whenLoaded(blog) {
+		label(blog.about)
+		label(blog.description)
+	}
 }
+
+service Blog {
+	resource data(): JSON {
+		uri = "/blog/apiblog"
+	}
+}
+ 

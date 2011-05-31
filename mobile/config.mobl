@@ -2,3 +2,7 @@ configuration
 
 title "Blog"
 //release output "../" 
+
+release output "../WebContent"
+
+output "www"

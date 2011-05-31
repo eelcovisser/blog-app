@@ -10,3 +10,5 @@ imports bookmarks/bookmarks-view
 
 imports blog/serendipity
 
+imports blog/blog-service
+

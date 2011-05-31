@@ -17,7 +17,7 @@ section blog
 		authors -> Set<User>
 		
 		modified :: DateTime (default=now())
-		function update() {
+	 function update() {
 		  if(description == null) { description := ""; }
 		}
 		function modified() { 
