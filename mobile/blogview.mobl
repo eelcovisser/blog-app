@@ -1,7 +1,7 @@
 module blogview
-
-
-  // header(blogTitle) {
+ 
+ 
+ // header(blogTitle) {
  //    button("Reset", onclick={
  //      resetDatabase();
  //    })

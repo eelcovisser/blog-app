@@ -7,12 +7,21 @@ import blogview
 screen root() {
 	var title = "blog"
 	header(title)
-	var posts = async(Blog.recentposts())
-	whenLoaded(posts) {
-	  list(post in posts) {
-	    item{ label(post.title) }
-	  }
+	var posts = async(postsCollection(Blog.recentposts()))
+	whenLoaded(posts) { 
+	  masterDetail(posts order by created desc, postItem, postDetail) { }
 	}
+}
+
+control postItem(p: Post) {
+  label(p.title)
+}
+
+control postDetail(p: Post) {
+  label(p.title)
+  block{
+    label(p.content)
+  }
 }
 
 
