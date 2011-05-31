@@ -1,11 +1,11 @@
-module blog/blog-model
+module blog/blog-model 
 
 imports user/user-model
-
+ 
 section blog 
-
-	entity Blog {
-		key   :: String (id)
+  
+	entity Blog { 
+		key   :: String (id) 
 		title :: String (searchable) 
 		main  :: Bool (default=false)
 		
@@ -25,7 +25,7 @@ section blog
 		}
 		function rename(x: String) {
 		  var k := keyFromName(x);
-		  assert(findBlog(k) == null, "that name is already taken");
+		  assert(findBlog(k) == null, "that name is already taken"); 
 		  key := k;
 		}
 		function mayPost(): Bool {

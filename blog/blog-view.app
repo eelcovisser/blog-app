@@ -2,11 +2,11 @@ module blog/blog-view
 
 imports blog/blog-model
 imports layout/layout-view 
-
+ 
 access control rules
   rule template newBlog() { isAdministrator() }
   rule template newPost(b: Blog) { b.mayPost() }
-   
+    
 section blog page layout
 
   define bloglayoutAux() {
@@ -50,7 +50,7 @@ section blog page layout
   }
   
   define link(b: Blog) {
-    if(b.main) { navigate blog(1) { elements } } else { navigate other(b,1) { elements } }
+    if(b.main) { navigate blog(0) { elements } } else { navigate other(b,0) { elements } }
   }
 
   define link(b: Blog, index: Int) {
@@ -150,7 +150,7 @@ section blog rss
   }
  
   define blogrss(b: Blog) { 
-  	rssWrapper(b.title, link(b,1), b.description as Text, b.modified){ 
+  	rssWrapper(b.title, link(b,0), navigate(feed("blog")), b.description as Text, b.modified){ 
   		for(p: Post in b.recentPosts(1,20,false,false)) { rssPost(p) }
   	}
   }
@@ -185,11 +185,18 @@ section blog front page
   }
   
   define blog(b: Blog,index: Int) {
+    var count := b.postCount(isWriter(), false)
+    var perpage := 5
+    init{
+      var pages : Int := 1 + (count - 1)/perpage;
+      if(index > pages) { goto other(b, pages); }
+      if(index < 0) { goto other(b, 1); }
+    }
     title{ output(b.title) " | page " output(index) }
     define pageIndexLink(i: Int, lab: String) { link(b,i) { output(lab) } }
     bloglayout(b){
       for(p: Post in b.recentPosts(index,5,isWriter(),false)) { postInList(p) }    
-      pageIndex(index, b.postCount(isWriter(), false), 5, 20, 3)
+      pageIndex(index, count, perpage, 20, 3)
     }
     postCommentCountScript
   }

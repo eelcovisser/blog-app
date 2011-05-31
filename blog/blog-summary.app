@@ -1,0 +1,2 @@
+module blog/blog-summary
+
