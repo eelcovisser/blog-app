@@ -80,7 +80,7 @@ section main template
   
 section error messages
 
-  define override ignore-access-control templateSuccess(messages : List<String>) {
+  define ignore-access-control templateSuccess(messages : List<String>) {
     <div id="message">
       output(messages)
     </div>
