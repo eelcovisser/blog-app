@@ -1,0 +1,40 @@
+module blogmodel
+
+entity Post {
+  
+  number      : Num
+  key         : String // symbolic identity
+  urlTitle    : String 
+  title       : String (searchable)
+  description : String (searchable)
+  content     : String (searchable)
+  extended    : String (searchable) 
+  created     : DateTime 
+  modified    : DateTime  
+}
+
+
+service Blog {
+  resource data(): JSON{ 
+    uri = "/blog/apiblog"
+  }
+  resource recentposts(): JSON {
+    uri = "/blog/apirecentposts"
+  }
+}
+
+// function fetchAndCacheFeed() {
+//   if(isOnline()) {
+//     var result = YQL.query("select * from feednormalizer where url='" + blogUrl + "' and output='atom_1.0'");
+//     var entries = result.feed.entry;
+//     foreach(entry in entries) {
+//       var post = Post.findBy("entryId", entry.id);
+//       if(!post) {
+//         post = Post();
+//         add(updatePost(post, entry));
+//       } else {
+//         updatePost(post, entry);
+//       }
+//     }
+//   }
+// }

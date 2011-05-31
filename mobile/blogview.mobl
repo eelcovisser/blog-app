@@ -1,0 +1,29 @@
+module blogview
+
+
+  // header(blogTitle) {
+ //    button("Reset", onclick={
+ //      resetDatabase();
+ //    })
+ //  }
+ //  masterDetail(Post.all() order by dateStr desc, postItem, postDetail)
+ //  script {
+ //    async {
+ //      fetchAndCacheFeed();
+ //    }
+ //  }
+ 
+// control postItem(p : Post) {
+//   label(p.title)
+//   nl()
+//   span(summaryStyle) {
+//     label(p.summary + "...")
+//   }
+// }
+// 
+// control postDetail(p : Post) {
+//   label(p.title, style=blogHeading)
+//   block(blogArticleStyle) {
+//     html(p.content)
+//   }
+// }

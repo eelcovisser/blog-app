@@ -82,6 +82,9 @@ section posts
   var lastPost := LastPost{}
 
 	extend entity Blog {
+	  function recentPublicPosts(index: Int, n: Int): List<Post> {
+	    return recentPosts(index, n, false, false);
+	  }
 	  function recentPosts(index: Int, n: Int, includePrivate: Bool, drafts: Bool): List<Post> {
 	    if(drafts) {
 	      return select p from Post as p 

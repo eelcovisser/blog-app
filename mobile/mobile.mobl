@@ -1,20 +1,19 @@
 application mobile
 
 import mobl::ui::generic
+import blogmodel
+import blogview
 
 screen root() {
 	var title = "blog"
 	header(title)
-	var blog = async(Blog.data())
-	whenLoaded(blog) {
-		label(blog.about)
-		label(blog.description)
+	var posts = async(Blog.recentposts())
+	whenLoaded(posts) {
+	  list(post in posts) {
+	    item{ label(post.title) }
+	  }
 	}
 }
 
-service Blog {
-	resource data(): JSON {
-		uri = "/blog/apiblog"
-	}
-}
- 
+
+
