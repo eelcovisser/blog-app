@@ -4,6 +4,5 @@ import mobl::ui::generic
 
 screen root() {
 	header("mobile blog")
-	"foobar"
+	"test"
 }
-  
