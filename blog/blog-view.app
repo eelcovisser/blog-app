@@ -163,7 +163,7 @@ section blog rss
         if(!isEmptyString(p.description)) { 
           output(p.description)
         } else {
-          output(p.content)
+          outputRelaxed(p.content)
         }
       </description>
       //<author>email address (Name)</author>
@@ -317,11 +317,11 @@ section posts
   }
   
   define postContent(p: Post) {
-    <div class="postContent">output(p.content)</div>
+    <div class="postContent">outputRelaxed(p.content)</div>
   }
   
   define postExtendedContent(p: Post) {
-    <div class="postContent">output(p.extended)</div>
+    <div class="postContent">outputRelaxed(p.extended)</div>
   }
   
   define postInIndex(p: Post) {
@@ -335,7 +335,7 @@ section posts
     <div class="postInSearch">
       <h1>permalink(p){ output(p.title) }</h1>
       postByLine(p)
-      par{ output(abbreviate(p.content,500) as WikiText) }
+      par{ outputRelaxed(abbreviate(p.content,500) as WikiText) }
       clear
     </div>
   } 

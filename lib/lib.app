@@ -10,6 +10,7 @@ imports lib/editable
 imports lib/coordinates
 imports lib/modal-dialog
 imports lib/rss
+imports lib/wikitext
 
 section ajax lib
 
