@@ -97,7 +97,7 @@ section search
   define wikiInSearch(w: Wiki) {
     <div class="wikiInSearch">
       <h2>output(w)</h2>
-      <div class="content">output(abbreviate(w.content,200))</div>
+      <div class="content">output(abbreviate(w.content.format(),500))</div>
     </div>
   }
 

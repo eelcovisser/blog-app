@@ -1,28 +1,20 @@
 application mobile
 
+import mobl::markdown
 import mobl::ui::generic
 import blogmodel
 import blogview
 
 screen root() {
 	var title = "blog"
-	header(title)
-	var posts = async(postsCollection(Blog.recentposts()))
+	header(title) 
+	var posts = async(postsMapper(Blog.recentposts()))
 	whenLoaded(posts) { 
 	  masterDetail(posts order by created desc, postItem, postDetail) { }
 	}
 }
 
-control postItem(p: Post) {
-  label(p.title)
-}
 
-control postDetail(p: Post) {
-  label(p.title)
-  block{
-    label(p.content)
-  }
-}
 
 
 

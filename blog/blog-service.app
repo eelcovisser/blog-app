@@ -25,6 +25,7 @@ section post
   extend entity Post {
     function json(): JSONObject {
       var obj := JSONObject();
+      log("json post: " + key + " : " + title);
       obj.put("id", id);
       obj.put("number", number);
       obj.put("key", key);
@@ -32,11 +33,11 @@ section post
       obj.put("title", title);
       obj.put("description", description);
       obj.put("content", content);
+      obj.put("contentHTML", content.format());
       obj.put("extended", extended);
+      obj.put("extendedHTML", extended.format());
       obj.put("created", created);
       obj.put("modified", modified);
-      //obj.put("", );
-      //obj.put("", );
       return obj;
     }
   }
@@ -53,4 +54,8 @@ section post
   
   service apipost(p: Post) {
     return p.json();
+  }
+  
+  define outputContent(p: Post) {
+    output(p.content)
   }

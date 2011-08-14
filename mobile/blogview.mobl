@@ -1,29 +1,39 @@
 module blogview
- 
- 
- // header(blogTitle) {
- //    button("Reset", onclick={
- //      resetDatabase();
- //    })
- //  }
- //  masterDetail(Post.all() order by dateStr desc, postItem, postDetail)
- //  script {
- //    async {
- //      fetchAndCacheFeed();
- //    }
- //  }
- 
-// control postItem(p : Post) {
-//   label(p.title)
-//   nl()
-//   span(summaryStyle) {
-//     label(p.summary + "...")
-//   }
-// }
-// 
-// control postDetail(p : Post) {
-//   label(p.title, style=blogHeading)
-//   block(blogArticleStyle) {
-//     html(p.content)
-//   }
-// }
+
+import blogmodel
+
+control postItem(p: Post) {
+  label(p.title)
+  nl()
+  span(summaryStyle){
+    label(p.description)
+  }
+}
+
+control postDetail(p: Post) {
+  label(p.title, style=blogHeading)
+  block(blogArticleStyle){
+    //markdown(p.content)
+    //markdown(p.extended)
+    html(p.contentHTML)
+    html(p.extendedHTML)
+  }
+}
+
+style blogArticleStyle {
+  background: white;
+  margin: 0;
+  padding: 10px;
+}
+
+style summaryStyle {
+  color: gray;
+  font-size: 70%;
+}
+
+style blogHeading {
+  display: block;
+  font-size: 150%;
+  font-weight: bold;
+  padding: 10px;
+}

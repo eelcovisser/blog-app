@@ -1,51 +1,51 @@
 module blogmodel
 
 entity Post {
-  number      : Num
-  key         : String // symbolic identity
-  urlTitle    : String 
-  title       : String (searchable)
-  description : String (searchable)
-  content     : String (searchable)
-  extended    : String (searchable) 
-  created     : DateTime 
-  modified    : DateTime  
+  id           : String
+  number       : Num
+  key          : String // symbolic identity
+  urlTitle     : String 
+  title        : String (searchable)
+  description  : String (searchable)
+  content      : String (searchable)
+  extended     : String (searchable) 
+  contentHTML  : String 
+  extendedHTML : String 
+  created      : DateTime 
+  modified     : DateTime  
 }
 
 service Blog {
-  resource recentposts(): [Post] {
+  resource recentposts(): JSON {
     uri = "/blog/apirecentposts"
-    mapper = postsMapper
+    //mapper = postsMapper
   }
 }
 
-function postsMapper(json : JSON) : [Post] {
-  return json;
+function postsMapper(objs : JSON) : Collection<Post> {
+  var posts : Collection<Post> = Collection<Post>();
+  foreach(obj in objs) {    
+    posts.add(updatePost(obj));
+  }
+  return posts;
 }
 
-function postsCollection(ps: [Post]): Collection<Post> {
-  var pcol : Collection<Post> = Collection<Post>();
-  foreach(p: Post in ps) { pcol.add(p); }
-  return pcol;
+function updatePost(obj: JSON): Post {
+  var post = Post.findBy("id", obj.id); 
+  if(!post) {
+    post = Post.fromSelectJSON(obj);
+  } else {
+    post.number = obj.number;
+    post.key = obj.key;
+    post.urlTitle = obj.urlTitle;
+    post.title = obj.title;
+    post.description = obj.description;
+    post.content = obj.content;
+    post.extended = obj.extended;
+    post.contentHTML = obj.contentHTML;
+    post.extendedHTML = obj.extendedHTML;
+    post.created = obj.created;
+    post.modified = obj.modified;
+  }
+  return post;
 }
-
-
-  // resource data(): JSON{ 
-  //   uri = "/blog/apiblog"
-  // }
-
-// function fetchAndCacheFeed() {
-//   if(isOnline()) {
-//     var result = YQL.query("select * from feednormalizer where url='" + blogUrl + "' and output='atom_1.0'");
-//     var entries = result.feed.entry;
-//     foreach(entry in entries) {
-//       var post = Post.findBy("entryId", entry.id);
-//       if(!post) {
-//         post = Post();
-//         add(updatePost(post, entry));
-//       } else {
-//         updatePost(post, entry);
-//       }
-//     }
-//   }
-// }
