@@ -7,6 +7,7 @@ imports entity/entity
 imports wiki/wiki-view
 imports file/file-view
 imports bookmarks/bookmarks-view
+imports gallery/gallery-view
 
 imports blog/serendipity
 

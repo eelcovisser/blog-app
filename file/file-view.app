@@ -1,8 +1,8 @@
 module file/file-view
-
+ 
 imports file/file-model
 
-access control rules
+access control rules  
 
   rule template attachments(attachments: Ref<Attachments>) { attachments.mayView() }
   rule template attachmentsActions(attachments: Ref<Attachments>) { attachments.mayEdit() }
