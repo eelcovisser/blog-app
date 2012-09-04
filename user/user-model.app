@@ -9,8 +9,12 @@ access control rules
   predicate isAdministrator() { loggedIn() && principal().isAdministrator() }
   predicate isWriter() { loggedIn() && principal().mayWrite() }
   predicate isCommenter() { loggedIn() && principal().mayComment() }
- 
+  
 section users
+
+  function principal() : User {
+    return securityContext.principal;
+  }
 
 	entity User {
 	  username        :: String (id,validate(isUniqueUser(this),"That username is not available"))

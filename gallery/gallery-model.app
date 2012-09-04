@@ -4,24 +4,42 @@ section photos
 
   entity Photo {
     original    :: Image
-    normal      :: Image
+    large       :: Image
+    medium      :: Image
+    small       :: Image
     thumbnail   :: Image
+    square      :: Image
     title       :: String
     description :: WikiText
     created     :: DateTime (default=now())
     modified    :: DateTime (default=now())
     
-    function add() { 
-    	var h := original.getHeight();
-    	var w := original.getWidth();
-    	normal := original;
-    	if(w > 600) { 
-    		normal.resize(600, (h * 600) / w);
-      }
-    	thumbnail := original;
-    	if(w > 150) {
-    	  thumbnail.resize(150, (h * 150) / w);
-    	}
+    function init() { 
+      if(thumbnail == null) { resize(); }
     }
+    function resize() {
+      large     := copy(1024);
+      medium    := copy(500);
+      small     := copy(240);
+      thumbnail := copy(100);
+      square    := copy(75);
+    }
+    function copy(width: Int) : Image {
+      var img := original.clone();
+      var h := original.getHeight();
+      var w := original.getWidth();
+      if(h > 0) { img.resize(width, h * width / w); }
+      return img;
+    }
+    function mayEdit() : Bool { return loggedIn(); }
+    function mayView() : Bool { return true; }
+    
+    function filename() : String {
+      return name + ".jpg";
+    } 
+    
+    // set filename of image
+    
   }
+ 
   

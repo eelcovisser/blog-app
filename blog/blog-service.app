@@ -33,14 +33,14 @@ section post
       obj.put("title", title);
       obj.put("description", description);
       obj.put("content", content);
-      obj.put("contentHTML", content.format());
+      obj.put("contentHTML", content/*.format()*/);
       obj.put("extended", extended);
-      obj.put("extendedHTML", extended.format());
+      obj.put("extendedHTML", extended/*.format()*/);
       obj.put("created", created);
       obj.put("modified", modified);
       return obj;
     }
-  }
+  } 
   
   function json(posts: List<Post>): JSONArray {
     var array := JSONArray();

@@ -1,4 +1,4 @@
-module wiki/wiki-view  
+module wiki/wiki-view 
   
 imports wiki/wiki-model
  
@@ -9,23 +9,32 @@ access control rules
 
   rule page admin() { isAdministrator() }
   
-section application
+section frontpage
 
   define page root(){
-    title { output(application.title) }
-    wikilayout() { includeWiki("frontpage") }
+    title { output(application.title) }   
+    wikilayout{
+      pageHeader{ output(application.title) }
+      includeWiki("frontpage")
+    }
   }
+  
+section administration
   
   define page admin() {
     init{ application.update(); }
-    main{
+    wikilayout{
+      pageHeader{ "Site Configuration" }
       form{
         formEntry("Title"){  
-          input(application.title)  }
+          input(application.title) 
+        }
         formEntry("Email"){ 
-          input(application.email)  }
+          input(application.email)
+        }
         formEntry("Disqus Forum Id"){ 
-          input(application.disqusForumId) } 
+          input(application.disqusForumId)
+        } 
         formEntry("Analytics On") {
           input(application.analyticsOn)
         }
@@ -33,53 +42,104 @@ section application
           input(application.analyticsAccount)
         }
         formEntry("acceptRegistrations"){ 
-          input(application.acceptRegistrations)  }
+          input(application.acceptRegistrations)
+        }
         formEntry("Footer"){ 
-          input(application.footer) }
-        submit action{ } { "Save" }
+          input(application.footer) [style="height:300px;"]
+        }
+        submit action{ return root(); } [class="btn btn-primary"] { "Save" }
       }
     }
   }
-
-imports lib/pageindex
+  
+section wiki page layout
+  
+  define wikiAdminMenu() { 
+    dropdownInNavbar("Admin"){
+      dropdownMenu{
+        dropdownMenuItem{ navigate pageindex() { "Index" } }
+        dropdownMenuItem{ navigate admin() { "Site Configuration" } }
+      }
+    }
+  }
+  
+  define researchMenu() { 
+    dropdownInNavbar("Research"){
+      dropdownMenu{
+        dropdownMenuItem{ navigate wiki("research","")     { "Overview"     } }
+        dropdownMenuItem{ navigate wiki("publications","") { "Publications" } }
+        dropdownMenuItem{ navigate wiki("projects","")     { "Projects"     } }
+        dropdownMenuItem{ navigate wiki("software","")     { "Software"     } }
+        dropdownMenuItem{ navigate wiki("students","")     { "Students"     } }
+      }
+    }
+  }
+  
+  define teachingMenu() { 
+    dropdownInNavbar("Teaching"){
+      dropdownMenu{
+        dropdownMenuItem{ navigate wiki("teaching","") { "Overview" } }
+        dropdownMenuItem{ navigate wiki("courses","")  { "Courses"  } }
+        dropdownMenuItem{ navigate wiki("theses","")   { "Theses"   } }
+        dropdownMenuItem{ navigate wiki("students","") { "Students" } }
+      }
+    }
+  }
+  
+  define bioMenu() { 
+    dropdownInNavbar("Bio"){
+      dropdownMenu{
+        dropdownMenuItem{ navigate wiki("bio","")      { "Bio" } }
+        dropdownMenuItem{ navigate wiki("cv","")       { "Curriculum Vitae"  } }
+        dropdownMenuItem{ navigate wiki("students","") { "Students" } }
+      }
+    }
+  }
 
   define wikilayout() {
-    define sidebar() {
-      searchWiki()
-      navigate feed("wiki") { "RSS" }
-      sidebarSection{
-        includeWiki("sidebar")
-        if(isAdministrator()) { 
-          includeWiki("adminSidebar")
-          
-          list{ 
-            listitem{ navigate pageindex() { "Index" } }
-            listitem{ navigate admin() { "Site Configuration" } } 
-          }
-        }
-      }
-    }
     define rssLink() {
       <link rel="alternate" type="application/rss+xml" title="RSS" href=navigate(feed("wiki")) />
+    } 
+    define brand() {
+      navigate root() [class="brand"] { output(application.title) } 
     }
-    <div id="wiki">
-    main{
-      elements
+    mainResponsive{ 
+      navbarResponsive{       
+        navItems{ 
+          researchMenu
+          teachingMenu
+          bioMenu
+          navItem{ navigate wiki("news","")    { "News" } } 
+          navItem{ navigate blog(0)            { "Blog" } } 
+          navItem{ navigate wiki("contact","") { "Contact" } } 
+          wikiAdminMenu
+        }
+      }
+      gridContainer{
+        messages
+        elements 
+      }
+      footer{
+        gridContainer{
+          pullRight{ signinoff }
+          pagefooter
+        }
+      }
+      analytics
     }
-    </div>
   }
-
+   
 section search 
 
   define searchWiki() {
     var query: String
     action search() { if(query != "") { return wikisearch(query,1); } }
-    <div class="searchPosts">
+    div[class="searchPosts"]{
       form{
         input(query)
-        submit search() { "Search" }
+        submit search() [class="btn"] { iSearch " Search" }
       }
-    </div>    
+    }
   }
 
   define page wikisearch(query: String, index: Int) {
@@ -88,17 +148,19 @@ section search
     // todo pagination   
     //define pageIndexLink(i: Int, lab: String) { navigate index(i) { output(lab) } }
     wikilayout{ 
-      <h1>"Search Results for '" output(query) "'"</h1>
+      pageHeader{ "Search Results for '" output(query) "'" }
       for(w: Wiki in searchWiki(query, 30, 30*(idx-1))) { wikiInSearch(w) }
       //pageIndex(index, b.postCount(loggedIn()), 10)
     }
   }
   
   define wikiInSearch(w: Wiki) {
-    <div class="wikiInSearch">
-      <h2>output(w)</h2>
-      <div class="content">output(abbreviate(w.content.format(),500))</div>
-    </div>
+    div[class="wikiInSearch"]{
+      pageHeader3{ output(w) }
+      div[class="content"]{
+        output(abbreviate(w.content.format(),500))
+      }
+    }
   }
 
 section wiki rss
@@ -163,23 +225,28 @@ section wiki
       }
     }
   }
+  
+  define showWiki(key: String) {
+    var w := findWiki(key)
+    if(w != null) { showWiki(w) }
+  }
 
   define ajax showWiki(w : Wiki) { 
     init{ w.update(); }
-    <h1>output(w.title)</h1>
-    output(w.content)
-    wikiActions(w)
+    pageHeader{ output(w.title) }
+    div[class="wikiContent"]{ output(w.content) }
     byLine(w)
+    wikiActions(w)
     attachments(w.attachments)
   }
   
   define ajax showWikiDiscussion(w : Wiki) { 
     action edit() { replace(view, editWikiDiscussion(w)); }
-    <h1>output(w.title) " (Discussion)"</h1>
+    pageHeader{ output(w.title) " (Discussion)" }
     output(w.discussion)
     block[class="wikiActions"] {
-      submitlink edit() { "[Edit]" } " "
-      navigate wiki(w.key,"") { "[Text]" }
+      submitlink edit() [class="btn"] { iPencil " Edit" } " "
+      navigate wiki(w.key,"") { "Text" }
     }
   }
   
@@ -189,12 +256,12 @@ section wiki
       replace(view, showWikiDiscussion(w)); 
     }
     action cancel() { replace(view, showWikiDiscussion(w)); }
-    <h1>output(w.title) " (Discussion)"</h1>
+    pageHeader{ output(w.title) " (Discussion)" }
     form{
-      input(w.discussion) 
-      submit save() { "Save" } " "
+      input(w.discussion) [style="height:500px;"]
+      submit save() [class="btn btn-primary"] { "Save" } " "
     }
-    submit cancel() { "Cancel" }
+    submit cancel() [class="btn"] { "Cancel" }
   }
   
   define includeWiki(key: String) {
@@ -208,18 +275,20 @@ section wiki
       replace(view, showWiki(w)); 
     }
     action cancel() { replace(view, showWiki(w)); }
-    <h1>output(w.title)</h1>
-    form{
-      formEntry("Key"){ input(w.key) }
-      formEntry("Title"){ input(w.title) }
-      formEntry("Text"){ input(w.content) }
-      submit save() { "Save" }
+    pageHeader{ output(w.title) }
+    horizontalForm{
+      controlGroup("Key"){ input(w.key) }
+      controlGroup("Title"){ input(w.title) }
+      controlGroup("Text"){ input(w.content) [style="height:500px;"] }
+      formActions{
+        submit save() [class="btn btn-primary"] { "Save" } " "
+        navigate wiki(w.key,"") [class="btn"]  { "Cancel" }
+      }
     }
-    submit cancel() { "Cancel" }
   }
 
   define byLine(w: Wiki) {
-    block[class="byline"] {
+    div[class="wikibyline"] {
       "Created " output(w.created.format("MMMM d, yyyy")) 
       " | Last modified " output(w.modified.format("MMMM d, yyyy"))
       if(!w.public()) { " | not public " }
@@ -231,18 +300,22 @@ section wiki
     action edit() { replace(view, editWiki(w)); }
     action publish() { w.show(); }
     action hide() { w.hide(); }
-    block[class="wikiActions"]{
-      submitlink edit() { "[Edit]" } " "
-      navigate wiki(w.key, "discuss") { "[Discuss]" } " "
+    span[class="wikiActions"]{
+      submitlink edit() [class="btn"] { iPencil " Edit" } " "
+      navigate wiki(w.key, "discuss") [class="btn"]  { "Discuss" } " "
       if(w.public()) { 
-        submitlink hide() { "[Hide]" }
+        submitlink hide()  [class="btn"]  { "Hide" }
       } else {
-        submitlink publish() { "[Publish]" }
-      }
+        submitlink publish() [class="btn btn-primary"]  { "Publish" } 
+      } " "
     }
   }
 
 section links to wiki page
+
+  define wikiLink(key: String) {
+    navigate wiki(key, "") { output(key) }
+  }
       
   function link(w : Wiki): String {
     return navigate(wiki(w.key,"")); 
@@ -254,11 +327,11 @@ section links to wiki page
   
   define unknownWiki(key : String) {
     action create() { createWiki(key); }
-    <h1>output(key)</h1>
+    pageHeader{ output(key) }
     par{ "That page does not exist, or you do not have permission to view it." }
     par{
       if(mayCreateWiki()) {
-        submit create() { "Create Wiki Page" }
+        submit create() [class="btn btn-primary"] { "Create Wiki Page" }
       }
     }
   }
@@ -270,15 +343,11 @@ section page index
   
   define page pageindex() {
     wikilayout{
-      header{"Wiki"}
+      pageHeader{"Wiki"}
       list{
         for(w : Wiki where w.mayView() order by w.title ) {
           listitem{ output(w) }
         }
-      }
-      header{"Administration"}
-      list{
-        //listitem{ navigate }
       }
     }
   }

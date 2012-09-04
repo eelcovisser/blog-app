@@ -2,28 +2,69 @@ module blog/blog-view
 
 imports blog/blog-model
 imports layout/layout-view 
- 
+   
 access control rules
   rule template newBlog() { isAdministrator() }
   rule template newPost(b: Blog) { b.mayPost() }
     
-section blog page layout
+section blog page layout  
 
-  define bloglayoutAux() {
+  define bloglayout(b: Blog) {
+    init{ b.update(); }    
     define rssLink() {
       <link rel="alternate" type="application/rss+xml" title="RSS" href=navigate(feed("blog")) /> 
     }
-    main{
-      elements
-    }  
+    mainResponsive{ 
+      blogNavbar(b)   
+      gridContainer{
+        messages
+        elements 
+      }
+      footer{
+        gridContainer{
+          pullRight{ signinoff }
+          pagefooter
+        }
+      }
+    }
+  }
+  
+  define blogNavbar(b: Blog) {
+    define brand() {
+      navigate blog(0) [class="brand"]{ output(b.title) }
+    }
+    navbarResponsive{
+      navItems{
+        listitem{ navigate index(1,"")  { "Articles" } }
+        //listitem{ navigate topics(1)    { "Topics"   } }
+        listitem{ navigate about()      { "About"    } }
+        listitem{ navigate contact()    { "Contact"  } }
+        listitem{ navigate feed("blog") { "Feed"     } }
+        blogAdminMenu(b)
+      }
+    }
+  }
+  
+  define blogAdminMenu(b: Blog) { 
+    dropdownInNavbar("Admin"){
+      dropdownMenu{
+        dropdownMenuItem{ newPost(b) }
+        dropdownMenuItem{ showHiddenPosts(b) }
+        dropdownMenuItem{ navigate index(1,"drafts") { "Drafts" } }
+        dropdownMenuItem {
+          if(b.main) { 
+            navigate blogadminmain() { "Blog Configuration" }
+          } else { 
+            navigate blogadmin(b){ "Blog Configuration" } 
+          }
+        }
+      }
+    }
   }
 
-  define bloglayout(b: Blog) {
-    init{ b.update(); }
-    define pageheader() { 
-      <div class="title">link(b){ output(b.title) }</div>
-    }
-    define sidebar() {
+section blog navigation
+  
+  define blogSidebar(b: Blog) {
       searchPosts(b)       
       sidebarSection{
         list{
@@ -34,14 +75,10 @@ section blog page layout
         }
       }
       showLinks(b)
-    	recentPosts(b)
-    	blogAdmin(b)
-    }
-    bloglayoutAux{
-      elements
-    }
+      recentPosts(b)
+      blogAdmin(b)
   }
-  
+    
   define recentPosts(b: Blog) {
   	sidebarSection{ 
       <h2>"Recent Posts"</h2>
@@ -107,10 +144,12 @@ section search
   }
   
   define page search(b: Blog, query: String) {
-  	bloglayout(b){
-  		for(p: Post in searchPost(query,30)) { postInSearch(p) }
-  	}
-    postCommentCountScript
+    bloglayout(b){
+   		//for(p: Post in searchPost(query,30)) { 
+   		  //postInSearch(p) 
+   		//}
+    }
+    // postCommentCountScript
   }
   
 access control rules
@@ -130,16 +169,20 @@ section blog table of contents
     init{ 
       if(tab == "drafts" && !b.isAuthor()) { return index(index,""); }
     }
-  	title{ "Index " output(b.title) }
+  	title{ "Articles " output(b.title) }
     define pageIndexLink(i: Int, lab: String) { navigate index(i, tab) { output(lab) } }
     bloglayout(b){
-      <h1> if(tab == "drafts") { "Drafts" } else { "Index" } </h1>
-      for(p: Post in b.recentPosts(index, 10, isWriter(), tab == "drafts" && b.isAuthor())) { postInIndex(p) }
-      pageIndex(index, b.postCount(isWriter(),tab == "drafts"), 10, 20, 3)
+      pageHeader{ if(tab == "drafts") { "Drafts" } else { "Articles" } }
+      tableBordered{
+        for(p: Post in b.recentPosts(index, 30, isWriter(), tab == "drafts" && b.isAuthor())) { 
+          postInIndex(p) 
+        }
+      }
+      pageIndex(index, b.postCount(isWriter(),tab == "drafts"), 30, 11, 1)
+      //postCommentCountScript
     }
-    postCommentCountScript
-  } 
-    
+  }
+
 section blog rss
 
   define page feed(type: String) { 
@@ -196,9 +239,9 @@ section blog front page
     define pageIndexLink(i: Int, lab: String) { link(b,i) { output(lab) } }
     bloglayout(b){
       for(p: Post in b.recentPosts(index,5,isWriter(),false)) { postInList(p) }    
-      pageIndex(index, count, perpage, 20, 3)
-    }
-    postCommentCountScript
+      pageIndex(index, count, perpage, 9, 1)
+    } 
+    //postCommentCountScript
   }
   
   define newBlog() {
@@ -214,6 +257,7 @@ access control rules
   rule page blogadmin(b: Blog) { b.isAuthor() }
   rule page blogadminmain() { mainBlog().isAuthor() }
   
+  rule template blogAdminMenu(b: Blog) { loggedIn() }
   rule template blogAdmin(b: Blog) { loggedIn() }
   
   rule template showHiddenPosts(b: Blog) { 
@@ -221,7 +265,7 @@ access control rules
   }
 
 section blog admin
-
+  
   define blogAdmin(b: Blog) { 
     sidebarSection{
       <h2>"Internal"</h2>
@@ -243,9 +287,9 @@ section blog admin
   define showHiddenPosts(b: Blog) {
     action toggle() { principal().toggleShowHiddenPosts(); }
     if(showHiddenPosts()) {
-      submitlink toggle() { "[Hide Non-Public Posts]" }
+      submitlink toggle() { "Hide Non-Public Posts" }
     } else {
-      submitlink toggle() { "[Show Non-Public Posts]" }
+      submitlink toggle() { "Show Non-Public Posts" }
     }
   }
   
@@ -259,16 +303,20 @@ section blog admin
     
   define blogConfig(b: Blog) {
     bloglayout(b) {
-      form{
-        formEntry("Blog Key"){ input(b.key) }
-        formEntry("Blog Title"){ input(b.title) }
-        formEntry("Blog Main"){ input(b.main) }
-        formEntry("Description"){ input(b.description) }
-        formEntry("About"){ input(b.about) }
-        formEntry("Contact"){ input(b.contact) }
-        formEntry("Links"){ input(b.links) }
-        formEntry("Authors"){ input(b.authors) }
-        submit action { return other(b,1); } { "Save" }
+      pageHeader{ "Configuration" }
+      horizontalForm{
+        controlGroup("Blog Key"){ input(b.key) }
+        controlGroup("Blog Title"){ input(b.title) }
+        controlGroup("Blog Main"){ input(b.main) }
+        controlGroup("Description"){ input(b.description) }
+        controlGroup("About"){ input(b.about) }
+        controlGroup("Contact"){ input(b.contact) }
+        controlGroup("Links"){ input(b.links) }
+        controlGroup("Authors"){ input(b.authors) }
+        formActions{
+          submit action { return other(b,1); } { "Save" }
+          navigate blog(0) { "Cancel" }
+        }
       }
     }
   }
@@ -304,16 +352,28 @@ section posts
   }
 
   define newPost(b: Blog) {
-    action new() { return post(b.addPost(),""); }
-    submitlink new() { "[New Post]" }
+    action new() { 
+      var p := b.addPost();
+      log("newPost: " + p.key);
+      return post(p,""); 
+    }
+    submitlink new() { "New Post" }
   }
   
   define postByLine(p: Post) {
-    <div class="postByline">
-      if(p.publicComments()) { <span class="comments">postCommentCount(p) </span> }
-      if(!p.public){ "not published | " }
-      <span class="date">output(p.created.format("MMMM d, yyyy"))</span>
-    </div>
+    div[class="byline"]{
+      //if(p.publicComments()) { <span class="comments">postCommentCount(p) </span> }    
+      <span class="date">output(p.created.format("MMM d, yyyy"))</span>
+      if(!p.public){ div[class="draft"]{ "Draft" } }
+    }
+  }
+  define postByLineLight(p: Post) {
+    output(p.created.format("MMM d, yyyy"))
+    if(!p.public){ " | draft" }
+  }
+  
+  define postDate(p: Post) {
+    output(p.created.format("MMM d, yyyy"))
   }
   
   define postContent(p: Post) {
@@ -325,31 +385,40 @@ section posts
   }
   
   define postInIndex(p: Post) {
-    <div class="postInIndex">
-      <h1>permalink(p){ output(p.title) }</h1>
-      postByLine(p)
-    </div>
+    row{ 
+      column[style="width:150px;"]{ output(p.created.format("MMM d, yyyy")) }
+      column{ permalink(p){ output(p.title) } }
+      column{ if(!p.public){ "draft" } }
+    }
   }
   
   define postInSearch(p: Post) {
-    <div class="postInSearch">
-      <h1>permalink(p){ output(p.title) }</h1>
-      postByLine(p)
-      par{ outputRelaxed(abbreviate(p.content,500) as WikiText) }
-      clear
-    </div>
-  } 
+    listitem{ 
+      permalink(p){ output(p.title) " | " postByLineLight(p) }
+      blockquote{
+        par{ outputRelaxed(abbreviate(p.content,500) as WikiText) }
+      }
+    }
+  }
   
   define postInList(p: Post) {
-    <div class="postInList">
-      <h1>permalink(p){ output(p.title) }</h1>
-      postByLine(p)
-      postContent(p)
-      if(!isEmptyString(p.extended)) { permalink(p){ "Read more" } }
-    </div>
+    pageHeader2{ permalink(p){ output(p.title) } }
+    postBodyLayout(p) {
+       postContent(p)
+       if(!isEmptyString(p.extended)) { permalink(p){ "Read more" } }
+     }
   }
 
 section post
+
+  define postBodyLayout(p: Post) {
+    gridRow {
+      gridSpan(2){ postByLine(p) }
+      gridSpan(10){
+        elements
+      }
+    }
+  }
 
   define page post(p: Post, title: String) {
     init{ p.update(); }
@@ -357,36 +426,39 @@ section post
     bloglayout(p.blog){
       placeholder view { postView(p) }
       postComments(p)
+      //postCommentCountScript
     }
-    postCommentCountScript
   }
   
   define ajax postView(p: Post) {
-    <div class="postView">
-	    <h1>output(p.title)</h1>
-	    postByLine(p)
+    pageHeader2{ output(p.title) }
+	  postBodyLayout(p) { 
 	    postContent(p) 
 	    postExtendedContent(p)
 	    postActions(p) 
-	  </div>
+	  }
   }
 
   define ajax postEdit(p: Post) {
     action save() { p.modified(); replace(view, postView(p)); }
-    <div class="postView">
-      <h1>output(p.title)</h1>
-      postByLine(p)
-      form{
-        formEntry("Title") { input(p.title) }
-        formEntry("Description (for use in summaries)"){ 
-          input(p.description)[class="description"] 
+    pageHeader2{ output(p.title) }
+    horizontalForm{
+        controlGroup("Title") { 
+          input(p.title) }
+        controlGroup("Description (for use in summaries)"){ 
+          input(p.description)[class="description span10", style="height: 100px;"] 
         }
-        formEntry("Content") { input(p.content) } 
-        formEntry("More Content") { input(p.extended) } 
-        formEntry("Created") { input(p.created) }
-        submit save() { "Save" }
-      }
-    </div>
+        controlGroup("Content") { 
+          input(p.content) [class="span10", style="height: 500px;"] } 
+        controlGroup("More Content") { 
+          input(p.extended) [class="span10", style="height: 500px;"]  } 
+        controlGroup("Created") { 
+          input(p.created) }
+        formActions{
+          submitlink save() [class="btn btn-primary"] { "Save" } " "
+          navigate post(p, p.title) [class="btn"] { "Cancel" }
+        }
+    }
   }
 
   define postActions(p: Post) {    
@@ -397,27 +469,27 @@ section post
     action undelete() { p.undelete(); }
     action showComments() { p.showComments1(); }
     action hideComments() { p.hideComments(); }
-    <div class="postActions">
-	  	submitlink edit() { "[Edit]" } 
+    div[class="postActions"]{
+	  	submitlink edit() [class="btn"] { iPencil " Edit" } 
 	  	" "
 	    if(p.public()) { 
-	    	submitlink withdraw() { "[Withdraw]" } " "
+	    	submitlink withdraw() [class="btn"] { "Withdraw" } " "
 	    	if(p.publicComments()){ 
-	    		submitlink hideComments() { "[Hide Comments]" }
+	    		submitlink hideComments() [class="btn"] { "Hide Comments" }
 	    	} else {
-	        submitlink showComments() { "[Show Comments]" }
+	        submitlink showComments() [class="btn"] { "Show Comments" }
 	    	}
 	    } else { 
-	    	submitlink publish() { "[Publish]" }
+	    	submitlink publish() [class="btn btn-primary"] { "Publish" }
 	      " "
 	      if(p.deleted()) { 
-	        submitlink undelete() { "[Undelete]" } " "
-		    	submitlink remove() { "[Permanently Delete]" } 
+	        submitlink undelete() [class="btn btn-primary"] { "Undelete" } " "
+		    	submitlink remove() [class="btn btn-warning"] { "Permanently Delete" } 
 		    } else {
-		    	submitlink remove() { "[Delete]" }
+		    	submitlink remove() [class="btn"] { iTrash " Delete" }
 		    }
 		  }
-	  </div>
+	  }
   }
   
 section comments

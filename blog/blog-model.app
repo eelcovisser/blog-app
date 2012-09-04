@@ -9,7 +9,7 @@ section blog
 		title :: String (searchable) 
 		main  :: Bool (default=false)
 		
-		about   :: WikiText      
+		about   :: WikiText        
 		contact :: WikiText
 		links   :: WikiText
 		description :: WikiText // for summaries, RSS
@@ -124,10 +124,12 @@ section posts
 	      blog    := this
 	      title   := "No Title"
 	    };
+	    p.key := p.number + "";
 	    authors.add(principal());
 	    p.save();
 	    postCount := null;
 	    postPublicCount := null; 
+	    log("created new post with key " + p.key);
 	    return p;
 	  }
 	}

@@ -42,11 +42,19 @@ section authentication
 		</div>
 	}
 	define signin() {
-		var n: String
-		var p: Secret
+    var n: String
+    var p: Secret
+	  action auth() { 
+	    var u := findUser("eelcovisser");
+	    if(u != null) { 
+	      securityContext.principal := u;
+	    }
+	    //authenticate(n, p); 
+	  } 
 		form{
-			input(n) input(p)
-			submit action{ authenticate(n, p); } { "Sign In" }
+			input(n) [class="span2"]
+			input(p) [class="span2"]
+			submit auth() { "Sign In" }
 		}
 		navigate register() { "Sign Up" }
 		navigate resetpassword(){ "Reset Password" }

@@ -15,10 +15,16 @@ access control rules
 section attachments
 
   define attachments(attachments: Ref<Attachments>) {
-    for(a: Attachment in attachments.attachments order by a.modified desc) { 
-      showAttachment(a) 
-    }
     attachmentsActions(attachments)
+    if(attachments.attachments.length > 0) {
+      div[class="attachments"]{
+        tableBordered{
+          for(a: Attachment in attachments.attachments order by a.modified desc) { 
+            showAttachment(a) 
+          }
+        }
+      }
+    }
   }
   
   define attachmentsActions(attachments: Ref<Attachments>) {    
@@ -28,29 +34,22 @@ section attachments
     }
     action publish() { attachments.publish(); }
     action hide() { attachments.hide(); }
-    submitlink new() { "[Add Attachment]" } " "
+    submitlink new() [class="btn"] { "Add Attachment" } " "
     if(attachments.public()) {
-      submitlink hide() { "[Hide Attachments]" }
+      submitlink hide() [class="btn"] { "Hide Attachments" }
     } else  {
-      submitlink publish() { "[Publish Attachments]" }
+      submitlink publish() [class="btn"] { "Publish Attachments" }
     }
   }
   
 section attachment
   
   define showAttachment(a: Attachment) {
-    block[class="attachment"]{
-      <h3>output(a.name)</h3>
-      <div class="attachmentInfo">
-	      <div class="attachmentActions">
-	        downloadAttachment(a) " "
-	        attachmentActions(a) 
-	      </div>
-	      <div class="attachmentModified">
-	        "Last Modified: " output(a.modified) 
-	      </div>
-      </div>
-      output(a.description)
+    row{
+      column{ output(a.name) }
+      column{ output(a.modified) }
+      column{ output(a.description) }
+      column{ downloadAttachment(a) " " attachmentActions(a) }
     }
   }
   
@@ -62,46 +61,48 @@ section attachment
     action delete() { a.attachments.remove(a); }
     action publish() { a.publish(); }
     action hide() { a.hide(); }
-    submitlink edit() { "[Edit]" } " "
+    submitlink edit() [class="btn"] { "Edit" } " "
     if(a.public()) { 
-       submitlink hide() { "[Hide]" }
+       submitlink hide() [class="btn"] { "Hide" }
      } else {
-       submitlink publish() { "[Publish]" }
+       submitlink publish() [class="btn"] { "Publish" }
      } " " 
-     submitlink delete() { "[Delete]" } 
+     submitlink delete() [class="btn"] { "Delete" } 
      //placeholder "editAttachment"+a.id { }
   }
   
   define downloadAttachment(a: Attachment) {
     action download() { a.file.download(); }
-    if(a.file != null) { downloadlink download() { "[Download]" } }
+    if(a.file != null) { downloadlink download() [class="btn"] { "Download" } }
   }
   
   define ajax editAttachmentInline(a: Attachment) {
     action save() { a.modified(); }
     modalDialogPopup("editAttachment") {
-      form{
-        formEntry("Name") { input(a.name) }
-        formEntry("File") { input(a.file) }
-        submit save() { "Save" }
+      horizontalForm{
+        controlGroup("Name") { input(a.name) }
+        controlGroup("File") { input(a.file) }
+        formActions{ submit save() [class="btn"] { "Save" } }
       }
     }
   }
   
   define page editAttachment(a : Attachment) {
     action save() { a.modified(); }
-    main{
-      <h1>"Attachment: " output(a.name)</h1>
-      form{
-        formEntry("Name") { input(a.name) }
+    wikilayout{
+      pageHeader2{ "Attachment: " output(a.name) }
+      horizontalForm{
+        controlGroup("Name") { input(a.name) }
         if(a.file != null) { 
-          formEntry("Current File") { downloadAttachment(a) }
-          formEntry("Replace File") { input(a.file) }
+          controlGroup("Current File") { downloadAttachment(a) }
+          controlGroup("Replace File") { input(a.file) }
         } else {
-          formEntry("File") { input(a.file) }
+          controlGroup("File") { input(a.file) }
         }
-        formEntry("Description") { input(a. description) }
-        submit save() { "Save" }
+        controlGroup("Description") { input(a. description) }
+        formActions{ 
+          submit save() [class="btn"] { "Save" }
+        }
       }
     }
   }

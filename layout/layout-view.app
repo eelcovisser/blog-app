@@ -1,8 +1,70 @@
 module layout/layout-view
 
+section web fonts
+
+  define bitterfont() {
+    <link href="http://fonts.googleapis.com/css?family=Bitter" rel="stylesheet" type="text/css" />
+  }
+
 section main template
 
-  define main() {
+  define mainStatic() {    
+    includeCSS("bootstrap-extension.css")
+    includeCSS("bootstrap/css/bootstrap.css")  
+    includeCSS("bootstrap/css/bootstrap-adapt.css")
+    includeJS("jquery.js")
+    includeJS("bootstrap/js/bootstrap.js")
+    includeHead("<meta name='viewport' content='width=device-width, initial-scale=1.0'>") 
+    elements
+  }
+  
+  define mainResponsive() {    
+    includeCSS("bootstrap/css/bootstrap.css") 
+    includeCSS("bootstrap/css/bootstrap-responsive.css")   
+    includeCSS("bootstrap/css/bootstrap-adapt.css")
+    includeCSS("bootstrap-extension.css")
+    includeJS("jquery.js")
+    includeJS("bootstrap/js/bootstrap.js")
+    includeHead("<meta name='viewport' content='width=device-width, initial-scale=1.0'>")   
+    //includeHead(rendertemplate(rssLink()))
+    //includeHead(rendertemplate(analytics))
+    //includeHead(rendertemplate(bitterfont))
+    //<link href="http://fonts.googleapis.com/css?family=Bitter" rel="stylesheet" type="text/css">
+    elements
+  }
+
+  define main() { 
+    navigationbar    
+    gridContainer[id="maincontainer"]{
+      messages
+      elements
+    }
+    //aselectWorkaround
+    footer{  
+      gridContainer{
+        pullRight{ signinoff }
+        pagefooter
+      }
+    }
+    analytics
+  }
+  
+  define brand() { 
+    navigate root() [class="brand"]{ "Blog" }
+  }
+  
+  define navigationbar() {    
+    navbar{
+      brand()
+      navItems{
+        elements
+      }
+    }
+  }
+
+section old main
+
+  define mainOld() {
     // http://www.google.com/webfonts
     // sans serif
     includeCSS("http://fonts.googleapis.com/css?family=Cabin+Sketch:bold")
@@ -29,7 +91,7 @@ section main template
     includeHead(rendertemplate(analytics))
     <div id="pageheader">
       <div id="pageheadercontent">
-        pageheader
+        //pageheader
       </div>
     </div>
     <div id="outercontainer">
@@ -51,11 +113,11 @@ section main template
     <div class="clear" />
   }
   
-  define pageheader() {
-    <div class="title">
-      navigate root(){ output(application.title) } 
-    </div>
-  }
+  // define pageheader() {
+  //   <div class="title">
+  //     navigate root(){ output(application.title) } 
+  //   </div>
+  // }
   
   define copyright() { rawoutput{ "&copyright;" } }
   
@@ -64,10 +126,10 @@ section main template
   }
   
   define sidebar() {
-    //showWiki("sidebar")
-    // if(loggedIn()){
-    //   showWiki("admin-sidebar")
-    // }
+    showWiki("sidebar")
+    if(loggedIn()){
+      showWiki("admin-sidebar")
+    }
   }
   
   define sidebarSection(){
@@ -80,15 +142,13 @@ section main template
   
 section error messages
 
-  define override ignore-access-control templateSuccess(messages : List<String>) {
-    <div id="message">
-      output(messages)
-    </div> 
-  }
+  // define override ignore-access-control templateSuccess(messages : List<String>) {
+  //   <div id="message">
+  //     output(messages)
+  //   </div> 
+  // }
   
 section tracking
-
-  // 
 
   define analytics() {
     var account := application.analyticsAccount
