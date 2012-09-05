@@ -11,11 +11,11 @@ section blog page layout
 
   define bloglayout(b: Blog) {
     init{ b.update(); }    
-    define rssLink() {
-      <link rel="alternate" type="application/rss+xml" title="RSS" href=navigate(feed("blog")) /> 
-    }
+    // define rssLink() {
+    //   <link rel="alternate" type="application/rss+xml" title="RSS" href=navigate(feed("blog"))></link> 
+    // }
     mainResponsive{ 
-      blogNavbar(b)   
+      blogNavbar(b)
       gridContainer{
         messages
         elements 
@@ -314,8 +314,8 @@ section blog admin
         controlGroup("Links"){ input(b.links) }
         controlGroup("Authors"){ input(b.authors) }
         formActions{
-          submit action { return other(b,1); } { "Save" }
-          navigate blog(0) { "Cancel" }
+          submitlink action { return other(b,1); } [class="btn btn-primary"] { "Save" } " "
+          navigate blog(0) [class="btn"] { "Cancel" }
         }
       }
     }
@@ -444,16 +444,20 @@ section post
     pageHeader2{ output(p.title) }
     horizontalForm{
         controlGroup("Title") { 
-          input(p.title) }
+          input(p.title) 
+        }
         controlGroup("Description (for use in summaries)"){ 
           input(p.description)[class="description span10", style="height: 100px;"] 
         }
         controlGroup("Content") { 
-          input(p.content) [class="span10", style="height: 500px;"] } 
+          input(p.content) [class="span10", style="height: 500px;"] 
+        } 
         controlGroup("More Content") { 
-          input(p.extended) [class="span10", style="height: 500px;"]  } 
+          input(p.extended) [class="span10", style="height: 500px;"] 
+        }
         controlGroup("Created") { 
-          input(p.created) }
+          input(p.created) 
+        }
         formActions{
           submitlink save() [class="btn btn-primary"] { "Save" } " "
           navigate post(p, p.title) [class="btn"] { "Cancel" }
