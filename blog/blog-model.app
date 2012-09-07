@@ -6,7 +6,7 @@ section blog
   
 	entity Blog { 
 		key   :: String (id) 
-		title :: String (searchable) 
+		title :: String (name, searchable) 
 		main  :: Bool (default=false)
 		
 		about   :: WikiText        

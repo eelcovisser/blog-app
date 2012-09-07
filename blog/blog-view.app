@@ -22,23 +22,27 @@ section blog page layout
       }
       footer{
         gridContainer{
-          pullRight{ signinoff }
+          gridRow{ footerMenubar(b.footerMenu()) }
           pagefooter
+          pullRight{ signinoff }
         }
       }
     }
   }
   
   define blogNavbar(b: Blog) {
+    var menubar := b.menubar
     define brand() {
-      navigate blog(0) [class="brand"]{ output(b.title) }
+      if(menubar.brand != null) {
+        navMenuItem(menubar.brand) [class="brand"]
+      } else {
+        navigate blog(0) [class="brand"]{ output(b.title) }
+      }
     }
     navbarResponsive{
       navItems{
+        dropdownMenubar(menubar)
         listitem{ navigate index(1,"")  { "Articles" } }
-        //listitem{ navigate topics(1)    { "Topics"   } }
-        listitem{ navigate about()      { "About"    } }
-        listitem{ navigate contact()    { "Contact"  } }
         listitem{ navigate feed("blog") { "Feed"     } }
         blogAdminMenu(b)
       }
@@ -58,34 +62,37 @@ section blog page layout
             navigate blogadmin(b){ "Blog Configuration" } 
           }
         }
+        dropdownMenuItem{ 
+          navigate configmenubar(b.menubar(),"edit") { "Menubar Configuration" }
+        }
       }
     }
   }
 
 section blog navigation
   
-  define blogSidebar(b: Blog) {
-      searchPosts(b)       
-      sidebarSection{
-        list{
-          listitem{ navigate about() { "About" } }
-          listitem{ navigate contact() { "Contact" } }
-          listitem{ navigate index(1,"") { "Index" } }
-          listitem{ navigate feed("blog") { "RSS" } }
-        }
-      }
-      showLinks(b)
-      recentPosts(b)
-      blogAdmin(b)
-  }
+  // define blogSidebar(b: Blog) {
+  //     searchPosts(b)       
+  //     sidebarSection{
+  //       list{
+  //         listitem{ navigate about() { "About" } }
+  //         listitem{ navigate contact() { "Contact" } }
+  //         listitem{ navigate index(1,"") { "Index" } }
+  //         listitem{ navigate feed("blog") { "RSS" } }
+  //       }
+  //     }
+  //     showLinks(b)
+  //     recentPosts(b)
+  //     blogAdmin(b)
+  // }
     
-  define recentPosts(b: Blog) {
-  	sidebarSection{ 
-      <h2>"Recent Posts"</h2>
-      list{ for(p: Post in b.recentPosts(1,10,isWriter(),false)){ listitem{ recentPost(p) } } }
-    }
-  }
-  
+//   define recentPosts(b: Blog) {
+//   	sidebarSection{ 
+//       <h2>"Recent Posts"</h2>
+//       list{ for(p: Post in b.recentPosts(1,10,isWriter(),false)){ listitem{ recentPost(p) } } }
+//     }
+//   }
+//   
   define link(b: Blog) {
     if(b.main) { navigate blog(0) { elements } } else { navigate other(b,0) { elements } }
   }
@@ -258,7 +265,7 @@ access control rules
   rule page blogadminmain() { mainBlog().isAuthor() }
   
   rule template blogAdminMenu(b: Blog) { loggedIn() }
-  rule template blogAdmin(b: Blog) { loggedIn() }
+  //rule template blogAdmin(b: Blog) { loggedIn() }
   
   rule template showHiddenPosts(b: Blog) { 
     loggedIn()
@@ -266,23 +273,26 @@ access control rules
 
 section blog admin
   
-  define blogAdmin(b: Blog) { 
-    sidebarSection{
-      <h2>"Internal"</h2>
-      list{
-	      listitem{ newPost(b) }
-	      listitem{ showHiddenPosts(b) }
-	      listitem{ navigate index(1,"drafts") { "Drafts" } }
-	      listitem {
-	        if(b.main) { 
-	          navigate blogadminmain() { "Blog Configuration" }
-	        } else { 
-	          navigate blogadmin(b){ "Blog Configuration" } 
-	        }
-	      }
-      }
-    }
-  }
+  // define blogAdmin(b: Blog) { 
+  //   sidebarSection{
+  //     <h2>"Internal"</h2>
+  //     list{
+	 //      listitem{ newPost(b) }
+	 //      listitem{ showHiddenPosts(b) }
+	 //      listitem{ navigate index(1,"drafts") { "Drafts" } }
+	 //      listitem {
+	 //        if(b.main) { 
+	 //          navigate blogadminmain() { "Blog Configuration" }
+	 //        } else { 
+	 //          navigate blogadmin(b){ "Blog Configuration" } 
+	 //        }
+	 //      }
+	 //      listitem {
+	 //      	navigate configmenubar(b.menubar,"edit") { "Menubar Configuration" }
+	 //      }
+  //     }
+  //   }
+  // }
   
   define showHiddenPosts(b: Blog) {
     action toggle() { principal().toggleShowHiddenPosts(); }

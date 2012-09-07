@@ -13,7 +13,7 @@ section frontpage
 
   define page root(){
     title { output(application.title) }   
-    wikilayout{
+    wikilayout {
       pageHeader{ output(application.title) }
       includeWiki("frontpage")
     }
@@ -59,59 +59,68 @@ section wiki page layout
       dropdownMenu{
         dropdownMenuItem{ navigate pageindex() { "Index" } }
         dropdownMenuItem{ navigate admin() { "Site Configuration" } }
+        dropdownMenuItem{ 
+          navigate configmenubar(application.menubar(), "edit") { 
+            "Configure Menubar" 
+          }
+        }
       }
     }
   }
   
-  define researchMenu() { 
-    dropdownInNavbar("Research"){
-      dropdownMenu{
-        dropdownMenuItem{ navigate wiki("research","")     { "Overview"     } }
-        dropdownMenuItem{ navigate wiki("publications","") { "Publications" } }
-        dropdownMenuItem{ navigate wiki("projects","")     { "Projects"     } }
-        dropdownMenuItem{ navigate wiki("software","")     { "Software"     } }
-        dropdownMenuItem{ navigate wiki("students","")     { "Students"     } }
-      }
-    }
-  }
+  // define researchMenu() { 
+  //   dropdownInNavbar("Research"){
+  //     dropdownMenu{
+  //       dropdownMenuItem{ navigate wiki("research","")     { "Overview"     } }
+  //       dropdownMenuItem{ navigate wiki("publications","") { "Publications" } }
+  //       dropdownMenuItem{ navigate wiki("projects","")     { "Projects"     } }
+  //       dropdownMenuItem{ navigate wiki("software","")     { "Software"     } }
+  //       dropdownMenuItem{ navigate wiki("students","")     { "Students"     } }
+  //     }
+  //   }
+  // }
+  // 
+  // define teachingMenu() { 
+  //   dropdownInNavbar("Teaching"){
+  //     dropdownMenu{
+  //       dropdownMenuItem{ navigate wiki("teaching","") { "Overview" } }
+  //       dropdownMenuItem{ navigate wiki("courses","")  { "Courses"  } }
+  //       dropdownMenuItem{ navigate wiki("theses","")   { "Theses"   } }
+  //       dropdownMenuItem{ navigate wiki("students","") { "Students" } }
+  //     }
+  //   }
+  // }
+  // 
+  // define bioMenu() { 
+  //   dropdownInNavbar("Bio"){
+  //     dropdownMenu{
+  //       dropdownMenuItem{ navigate wiki("bio","")      { "Bio" } }
+  //       dropdownMenuItem{ navigate wiki("cv","")       { "Curriculum Vitae"  } }
+  //       dropdownMenuItem{ navigate wiki("students","") { "Students" } }
+  //     }
+  //   }
+  // }
   
-  define teachingMenu() { 
-    dropdownInNavbar("Teaching"){
-      dropdownMenu{
-        dropdownMenuItem{ navigate wiki("teaching","") { "Overview" } }
-        dropdownMenuItem{ navigate wiki("courses","")  { "Courses"  } }
-        dropdownMenuItem{ navigate wiki("theses","")   { "Theses"   } }
-        dropdownMenuItem{ navigate wiki("students","") { "Students" } }
-      }
-    }
-  }
-  
-  define bioMenu() { 
-    dropdownInNavbar("Bio"){
-      dropdownMenu{
-        dropdownMenuItem{ navigate wiki("bio","")      { "Bio" } }
-        dropdownMenuItem{ navigate wiki("cv","")       { "Curriculum Vitae"  } }
-        dropdownMenuItem{ navigate wiki("students","") { "Students" } }
-      }
-    }
+  define wikilayout() { 
+    wikilayout(findCreateWiki("frontpage")) { elements }
   }
 
-  define wikilayout() {
+  define wikilayout(w: Wiki) {
+    var menubar := w.menubar()
     define rssLink() {
       <link rel="alternate" type="application/rss+xml" title="RSS" href=navigate(feed("wiki")) />
     } 
     define brand() {
-      navigate root() [class="brand"] { output(application.title) } 
+      if(menubar.brand != null) {
+        navMenuItem(menubar.brand) [class="brand"]
+      } else {
+        navigate root() [class="brand"] { output(application.title) } 
+      }
     }
     mainResponsive{ 
       navbarResponsive{       
-        navItems{ 
-          researchMenu
-          teachingMenu
-          bioMenu
-          navItem{ navigate wiki("news","")    { "News" } } 
-          navItem{ navigate blog(0)            { "Blog" } } 
-          navItem{ navigate wiki("contact","") { "Contact" } } 
+        navItems{          
+          dropdownMenubar(menubar)
           wikiAdminMenu
         }
       }
@@ -120,15 +129,16 @@ section wiki page layout
         elements 
       }
       footer{
-        gridContainer{
-          pullRight{ signinoff }
+        gridContainer{     
+          gridRow{ footerMenubar(w.footerMenu()) }
           pagefooter
+          pullRight{ signinoff }
         }
       }
       analytics
     }
   }
-   
+
 section search 
 
   define searchWiki() {
@@ -210,9 +220,10 @@ access control rules
 section wiki
 
   define page wiki(key: String, tab: String) {
-    var w := findWiki(key)
+    var w := findWiki(key);
+    var f := if(w == null) findCreateWiki("frontpage") else w;
     title{ output(wikiTitle(key)) }
-    wikilayout{
+    wikilayout(f){
       placeholder view{
         if(w == null || !w.mayView()) {
           unknownWiki(key)

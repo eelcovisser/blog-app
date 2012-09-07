@@ -1,5 +1,7 @@
 module layout/layout-view
 
+imports layout/menu-view
+
 section web fonts
 
   define bitterfont() {
