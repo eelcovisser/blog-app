@@ -39,6 +39,10 @@ section application menus
     }
   }
   
+  entity BlogMenubar : Menubar {
+    blog -> Blog
+  }
+  
   extend entity WikiGroup {  
     menubar    -> Menubar 
     footerMenu -> Menubar
@@ -80,6 +84,13 @@ section menu
   
   function newMenubar(): Menubar { 
     var mb := Menubar{ };
+    mb.key := mb.id + "";
+    mb.save();
+    return mb;
+  }
+  
+  function newBlogMenubar(): Menubar {
+    var mb := BlogMenubar{ };
     mb.key := mb.id + "";
     mb.save();
     return mb;

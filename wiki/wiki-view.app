@@ -175,7 +175,10 @@ section wiki
 
   define page wiki(group: String, key: String, tab: String) {
     var w := findWiki(group, key);
-    var f := if(w == null) findCreateWiki("","") else w;
+    var f := if(w == null) findWiki(group,"") else w;
+    init{
+      if(f == null) { f := findCreateWiki("", ""); }
+    }
     title{ output(wikiTitle(key)) }
     wikilayout(f){
       if(key == "index") {
@@ -310,7 +313,6 @@ section wiki
       submitlink edit() [class="btn"] { iPencil " Edit" } " "
       nav(w,"discuss") [class="btn"]  { "Discuss" } " "
       navigate wiki(w.group.keyBase, "index", "") [class="btn"] { "Index" } " "
-      navigate wikigroup(w.group.keyBase,"") [class="btn"] { "Group" } " "
       if(w.public()) { 
         submitlink hide()  [class="btn"]  { "Hide" }
       } else {

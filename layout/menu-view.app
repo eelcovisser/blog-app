@@ -14,9 +14,14 @@ section display in menubar
   	for(m: Menu in mb.menus) {
   		dropdownMenu(m)
   	}
+  	if(mb is a BlogMenubar && (mb as BlogMenubar).blog != null) {
+  	  navItem{ navigate index(1,"")  { "Articles" } } // todo: fix
+      navItem{ navigate feed("blog") { "Feed"     } } // todo: fix
+  	  blogAdminMenu((mb as BlogMenubar).blog)
+  	}
   }
   
-  define dropdownMenu(m: Menu) {
+  template dropdownMenu(m: Menu) {
     if(m.items.length == 0) {      
     } else { if(m.items.length == 1) {
   		navItem{ navMenuItem(m.items[0]) }
@@ -31,20 +36,20 @@ section display in menubar
   	} }
   }
 
-  define navMenuItem(item: MenuItem) {
+  template navMenuItem(item: MenuItem) {
     if(item is a ExternalLink) { navMenuItem(item as ExternalLink) [all attributes] }
     else { if(item is a WikiLink) { navMenuItem(item as WikiLink) [all attributes] } 
     else { if(item is a BlogLink) { navMenuItem(item as BlogLink) [all attributes] } } }
   }
-  define navMenuItem(item: ExternalLink) {
+  template navMenuItem(item: ExternalLink) {
   	//navigate url(item.link) [class=attribute("class")] { output(item.name) }
   	<a href=item.link class=attribute("class")> output(item.name) </a>
   }
-  define navMenuItem(item: WikiLink) {
+  template navMenuItem(item: WikiLink) {
     //navigate wiki(item.wiki.key,"") [class=attribute("class")] { output(item.name) }
     nav(item.wiki) [class=attribute("class")] { output(item.name) }
   }
-  define navMenuItem(item: BlogLink) {
+  template navMenuItem(item: BlogLink) {
     if(item.blog.main) {
       navigate blog(0) [class=attribute("class")] { output(item.name) }
     } else {
@@ -60,7 +65,7 @@ section display in footer
     }
   }
   
-  define footerMenu(m: Menu) {
+  template footerMenu(m: Menu) {
     if(m.items.length == 0) {
       
     } else { if(m.items.length == 1) {
@@ -79,7 +84,7 @@ section display in footer
   
 section configure menubar
 
-  define page configmenubar(mb: Menubar, tab: String) {
+  page configmenubar(mb: Menubar, tab: String) {
     define brand() {
       if(mb.brand != null) {
         navMenuItem(mb.brand) [class="brand"]
@@ -111,7 +116,7 @@ section configure menubar
     }
   }
   
-  define editMenubars() {
+  template editMenubars() {
     pageHeader{ "All Menubars" }
     tableBordered{    
       for(mb: Menubar) {
@@ -120,13 +125,16 @@ section configure menubar
           column{ submitlink action{ mb.delete(); } [class="btn"] { iRemove } }
         }
       }
-      submitlink action{ return configmenubar(newMenubar(),"edit"); } [class="btn"] {
+    }   
+    submitlink action{ return configmenubar(newMenubar(),"edit"); } [class="btn"] {
         iPlus "New Menubar"
-      }
+    } " "
+    submitlink action{ return configmenubar(newBlogMenubar(),"edit"); } [class="btn"] {
+      iPlus "New Blog Menubar"
     }
   }
   
-  define assignMenubars() {
+  template assignMenubars() {
     pageHeader{ "Assign Menubars" }
     form{
     tableBordered{
@@ -168,9 +176,15 @@ section configure menubar
   
 section edit menubar
 
-  define editMenubar(mb: Menubar) {
-  	action save() { message("Menu changes have been saved"); }
-  	action addMenu() { mb.addMenu(); }
+  template editMenubar(mb: Menubar) {
+  	action save() { 
+  	  message("Menu changes have been saved"); 
+  	  return configmenubar(mb, "");
+  	}
+    action addMenu() { 
+      mb.addMenu();   
+      return configmenubar(mb, "");
+    }
   	form{
   	  tableBordered{
   	    row{
@@ -183,6 +197,13 @@ section edit menubar
   	      column{ editBrand(mb) }
   	      column{ "" }
   	    }
+  	    if(mb is a BlogMenubar) {
+  	      row{
+  	        column{ "Blog" }
+  	        column{ input((mb as BlogMenubar).blog) }
+  	        column{ "" }
+  	      }
+  	    }
   	    for(m: Menu in mb.menus) {
   		    row{ editMenu(mb, m) }
   		  }
@@ -193,7 +214,7 @@ section edit menubar
   	}
   }
   
-  define editBrand(mb: Menubar) {
+  template editBrand(mb: Menubar) {
     if(mb.brand != null) { 
       editMenuItem(mb.brand) " "
       submitlink action{ mb.brand := null; } [class="btn"] { iRemove }
@@ -204,7 +225,7 @@ section edit menubar
     }
   }
   
-  define editMenu(mb: Menubar, m: Menu) {
+  template editMenu(mb: Menubar, m: Menu) {
   	column{ 
   	  if(m.items.length > 1) { 
   	    input(m.name) 
@@ -222,7 +243,7 @@ section edit menubar
     }
   }
   
-  define editMenuItems(m: Menu) {
+  template editMenuItems(m: Menu) {
     tableBordered{
       for(item: MenuItem in m.items) {
         row{ 
@@ -245,18 +266,23 @@ section edit menubar
     }
   }
   
-  define editMenuItem(item: MenuItem) {
+  template editMenuItem(item: MenuItem) {
   	if(item is a ExternalLink) { editMenuItem(item as ExternalLink) }
   	else { if(item is a WikiLink) { editMenuItem(item as WikiLink) } 
   	else { if(item is a BlogLink) { editMenuItem(item as BlogLink) } } }
   }
   
-  define editMenuItem(item: ExternalLink) {
+  template editMenuItem(item: ExternalLink) {
   	input(item.name) " " input(item.link)
   }
-  define editMenuItem(item: WikiLink) {
-    input(item.name) " " input(item.wiki)
+  template editMenuItem(item: WikiLink) {
+    input(item.name) " " 
+    //input(item.wiki)
+    select(item.wiki, (select w from Wiki as w order by w.key asc))
   }
-  define editMenuItem(item: BlogLink) {
+  template editMenuItem(item: BlogLink) {
     input(item.name) " " input(item.blog)
   }
+  
+  
+  

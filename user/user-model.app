@@ -3,6 +3,7 @@ module user/user-model
 principal is User with credentials username, password
 
 access control rules 
+
   rule page *(*) { true }
   rule ajaxtemplate *(*) { true }
   
@@ -22,6 +23,9 @@ section users
 	  password        :: Secret
 	  email           :: Email
 	  profile         :: WikiText
+	  
+	  //profileLink     -> MenuItem
+	  
 	  confirmed       :: Bool (default=false)
 	  isAdministrator :: Bool (default=false)
 	  mayComment      :: Bool (default=true)

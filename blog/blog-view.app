@@ -16,11 +16,12 @@ section blog page layout
       <link rel="alternate" type="application/rss+xml" title="RSS" href=navigate(feed("blog"))></link> 
     }
     mainResponsive{ 
-       navbar(b.menubar()){
-         navItem{ navigate index(1,"")  { "Articles" } }
-         navItem{ navigate feed("blog") { "Feed"     } }
-         blogAdminMenu(b)
-      }
+      navbar(b.menubar())
+      //{
+      //    navItem{ navigate index(1,"")  { "Articles" } }
+      //    navItem{ navigate feed("blog") { "Feed"     } }
+      //    blogAdminMenu(b)
+      // }
       gridContainer{
         messages
         elements 
@@ -146,13 +147,16 @@ section blog table of contents
     define pageIndexLink(i: Int, lab: String) { navigate index(i, tab) { output(lab) } }
     bloglayout(b){
       pageHeader{ if(tab == "drafts") { "Drafts" } else { "Articles" } }
-      tableBordered{
-        for(p: Post in b.recentPosts(index, 30, isWriter(), tab == "drafts" && b.isAuthor())) { 
-          postInIndex(p) 
+      gridRow{
+        gridSpan(10,2){
+          tableBordered{
+            for(p: Post in b.recentPosts(index, 30, isWriter(), tab == "drafts" && b.isAuthor())) { 
+              postInIndex(p) 
+            }
+          }
+          pageIndex(index, b.postCount(isWriter(),tab == "drafts"), 30, 11, 1)
         }
       }
-      pageIndex(index, b.postCount(isWriter(),tab == "drafts"), 30, 11, 1)
-      //postCommentCountScript
     }
   }
 

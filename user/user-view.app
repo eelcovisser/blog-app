@@ -14,11 +14,17 @@ section user profile
   }
  
 	page profile(u: User) {
+	  init{ 
+	    return root();
+	    // if(u.profileLink != null) { 
+	    //   return wiki(u.profileWiki.group.keyBase, u.profileWiki.keyBase, "");
+	    // }
+	  }
 	  main{
 	    pageHeader{ output(u.fullname) }
 	    output(u.profile)
 	    //contributions
-	    navigate editprofile(u) [class="btn"] { "Edit" } " "
+	    navigate editprofile(u) [class="btn"] { iPencil " Edit" } " "
 	    navigate updateaccount(u) [class="btn"] { "Update Account" }
 	  }
 	}
@@ -26,9 +32,14 @@ section user profile
 	page editprofile(u: User) {
 	  main{
       pageHeader{ output(u.fullname) }
-      form{
-        input(u.profile)
-        submitlink action{ return profile(u); } [class="btn"] { "Save" }
+      horizontalForm{
+        controlGroup("Profile") { input(u.profile) }
+        // controlGroup("Redirect") { 
+        //   editMenuItem(u.profileLink)
+        // }
+        formActions{
+          submitlink action{ return profile(u); } [class="btn btn-primary"] { "Save" }
+        }
       }
 	  }
 	}
@@ -45,11 +56,11 @@ section authentication
     var n: String
     var p: Secret
 	  action auth() { 
-	    var u := findUser("eelcovisser");
-	    if(u != null) { 
-	      securityContext.principal := u;
-	    }
-	    //authenticate(n, p); 
+	    // var u := findUser("eelcovisser");
+	    // if(u != null) { 
+	    //   securityContext.principal := u;
+	    // }
+	    authenticate(n, p); 
 	  }
 	  title{ "sign in" }
 	  main{
@@ -142,7 +153,9 @@ section update account
       controlGroup("Is Administrator"){
         input(u.isAdministrator)
       }
-      submit authorize() { "Authorize" }
+      formActions{
+        submitlink authorize() [class="btn btn-primary"] { "Authorize" }
+      }
     }
   }
   
@@ -187,7 +200,9 @@ section reset password
       pageHeader{ "Enter New Password" }
       horizontalForm{
         editPassword(r.user)
-        submit save() { "Save" }
+        formActions{
+          submitlink save() [class="btn btn-primary"] { "Save" }
+        }
       }
     }
   }
@@ -209,12 +224,14 @@ section registration
     }
     title{ "Registration" }
     main{
-      <h1>"Registration"</h1>
-      form{
+      pageHeader{ "Registration" }
+      horizontalForm{
         editUser(u)
         editPassword(u)
         captcha
-        submit register() { "Register"}
+        formActions{
+          submitlink register() [class="btn btn-primary"] { "Register"}
+        }
       }
     }
   }
