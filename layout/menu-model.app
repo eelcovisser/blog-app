@@ -39,22 +39,25 @@ section application menus
     }
   }
   
+  extend entity WikiGroup {  
+    menubar    -> Menubar 
+    footerMenu -> Menubar
+    function menubar(): Menubar {
+      return if(menubar != null) menubar else application.menubar();
+    }
+    function footerMenu(): Menubar {
+      return if(footerMenu != null) footerMenu else application.footerMenu();
+    }
+  }
+  
   extend entity Wiki {   
     menubar    -> Menubar 
     footerMenu -> Menubar
     function menubar(): Menubar {
-      if(menubar == null) {
-        return application.menubar();
-      } else {
-        return menubar;
-      }
+      return if(menubar != null) menubar else group.menubar();
     }
     function footerMenu(): Menubar {
-      if(footerMenu == null) {
-        return application.footerMenu();
-      } else {
-        return footerMenu;
-      }
+      return if(footerMenu != null) footerMenu else group.footerMenu();
     }
   }
 
@@ -83,24 +86,36 @@ section menu
   }
   
   entity Menu {
-    name      :: String
-    items -> List<MenuItem>
-    function addLink() {
-    	items.add(ExternalLink{ name := "No Title" link := "http://google.com" });
-    }
-    function addWiki() {
-      items.add(WikiLink{ name := "No Title" wiki := findCreateWiki("frontpage") });
-    }
-    function addBlog() {
-      items.add(BlogLink{ name := "No Title" blog := mainBlog() });
-    }
-    function remove(item: MenuItem) {
-      items.remove(item);
-    }
+    name     :: String
+    items    -> List<MenuItem>
+    menubar  -> Menubar (inverse=Menubar.menus)   
+    
+    function add(item: MenuItem) { items.add(item); }
+    function remove(item: MenuItem) { items.remove(item); }
+    function addLink() { add(newLink()); }
+    function addWiki() { add(newWiki()); }
+    function addBlog() { add(newBlog()); }
+    
+    function up() { up(menubar.menus, this); }
+    function down() { down(menubar.menus, this); }    
+  }
+  
+  function newLink(): MenuItem {
+    return ExternalLink{ name := "No Title" link := "http://google.com" };
+  }
+  function newWiki(): MenuItem {
+    return WikiLink{ name := "No Title" wiki := findCreateWiki("home","") };
+  }
+  function newBlog(): MenuItem {
+    return BlogLink{ name := "No Title" blog := mainBlog() };
   }
   
   entity MenuItem {
     name :: String
+    menu -> Menu (inverse=Menu.items)
+    
+    function up() { up(menu.items, this); }
+    function down() { down(menu.items, this); }   
   }
   
   entity ExternalLink : MenuItem {
@@ -115,5 +130,55 @@ section menu
   	blog -> Blog
   }
    
+section up/down
+
+  function isFirst(xs: List<Menu>, x: Menu): Bool {
+    return xs.indexOf(x) > 0;
+  }
   
+  function isLast(xs: List<Menu>, x: Menu): Bool {
+    return xs.indexOf(x) == xs.length - 1;
+  }
+
+  function up(xs: List<Menu>, x: Menu) {
+    var i := xs.indexOf(x);
+    if(xs != null && i > 0) {
+      xs.set(i, xs.get(i - 1));
+      xs.set(i - 1, x);
+    }
+  }
+  
+  function down(xs: List<Menu>, x: Menu) {
+    var i := xs.indexOf(x);
+    if(xs != null && i < xs.length - 1) {
+      xs.set(i, xs.get(i + 1));
+      xs.set(i + 1, x);
+    }
+  }
+  
+section up/down
+
+  function isFirst(xs: List<MenuItem>, x: MenuItem): Bool {
+    return xs.indexOf(x) > 0;
+  }
+  
+  function isLast(xs: List<MenuItem>, x: MenuItem): Bool {
+    return xs.indexOf(x) == xs.length - 1;
+  }
+
+  function up(xs: List<MenuItem>, x: MenuItem) {
+    var i := xs.indexOf(x);
+    if(xs != null && i > 0) {
+      xs.set(i, xs.get(i - 1));
+      xs.set(i - 1, x);
+    }
+  }
+  
+  function down(xs: List<MenuItem>, x: MenuItem) {
+    var i := xs.indexOf(x);
+    if(xs != null && i < xs.length - 1) {
+      xs.set(i, xs.get(i + 1));
+      xs.set(i + 1, x);
+    }
+  }
   

@@ -17,8 +17,7 @@ section display in menubar
   }
   
   define dropdownMenu(m: Menu) {
-    if(m.items.length == 0) {
-      
+    if(m.items.length == 0) {      
     } else { if(m.items.length == 1) {
   		navItem{ navMenuItem(m.items[0]) }
   	} else {
@@ -38,16 +37,18 @@ section display in menubar
     else { if(item is a BlogLink) { navMenuItem(item as BlogLink) [all attributes] } } }
   }
   define navMenuItem(item: ExternalLink) {
-  	navigate url(item.link) [all attributes] { output(item.name) }
+  	//navigate url(item.link) [class=attribute("class")] { output(item.name) }
+  	<a href=item.link class=attribute("class")> output(item.name) </a>
   }
   define navMenuItem(item: WikiLink) {
-    navigate wiki(item.wiki.key,"") [all attributes] { output(item.name) }
+    //navigate wiki(item.wiki.key,"") [class=attribute("class")] { output(item.name) }
+    nav(item.wiki) [class=attribute("class")] { output(item.name) }
   }
   define navMenuItem(item: BlogLink) {
     if(item.blog.main) {
-      navigate blog(0) [all attributes] { output(item.name) }
+      navigate blog(0) [class=attribute("class")] { output(item.name) }
     } else {
-      navigate other(item.blog,0) [all attributes] { output(item.name) }
+      navigate other(item.blog,0) [class=attribute("class")] { output(item.name) }
     }
   }
   
@@ -63,9 +64,9 @@ section display in footer
     if(m.items.length == 0) {
       
     } else { if(m.items.length == 1) {
-      gridSpan(3){ navMenuItem(m.items[0]) }
+      gridSpan(2){ navMenuItem(m.items[0]) }
     } else {
-      gridSpan(3) {
+      gridSpan(2) {
         output(m.name)
         list{
           for(item: MenuItem in m.items) {
@@ -112,17 +113,15 @@ section configure menubar
   
   define editMenubars() {
     pageHeader{ "All Menubars" }
-    list{    
+    tableBordered{    
       for(mb: Menubar) {
-        listitem{ 
-          navigate configmenubar(mb, "edit") { output(mb.name) } " "
-          submitlink action{ mb.delete(); } [class="btn"] { iRemove }
+        row{ 
+          column{ navigate configmenubar(mb, "edit") { output(mb.name) } }
+          column{ submitlink action{ mb.delete(); } [class="btn"] { iRemove } }
         }
       }
-      listitem{
-        submitlink action{ return configmenubar(newMenubar(),"edit"); } [class="btn"] {
-          "New Menubar"
-        }
+      submitlink action{ return configmenubar(newMenubar(),"edit"); } [class="btn"] {
+        iPlus "New Menubar"
       }
     }
   }
@@ -143,14 +142,21 @@ section configure menubar
       }
       for(b: Blog) {
         row{
-          column{ "Blog: " output(b.title) }
+          column{ "Blog: " navigate other(b,0) { output(b.title) } }
           column{ input(b.menubar) }
           column{ input(b.footerMenu) }
         }
       }
+      for(g: WikiGroup order by g.title asc) {       
+        row{
+          column{ "Wiki Group: " output(g) " (" output(g.keyBase) ")" }
+          column{ input(g.menubar) }
+          column{ input(g.footerMenu) }
+        }
+      }
       for(w: Wiki order by w.title asc) {       
         row{
-          column{ "Wiki: " output(w.title) }
+          column{ "Wiki: " output(w) " (" output(w.key) ")" }
           column{ input(w.menubar) }
           column{ input(w.footerMenu) }
         }
@@ -159,20 +165,26 @@ section configure menubar
     submitlink action{ message("Assignments saved"); } [class="btn btn-primary"] { "Save" }
     }
   }
+  
+section edit menubar
 
   define editMenubar(mb: Menubar) {
   	action save() { message("Menu changes have been saved"); }
   	action addMenu() { mb.addMenu(); }
   	form{
-  	  list{
-  	    listitem{
-  	      "Menubar name: " input(mb.key)
+  	  tableBordered{
+  	    row{
+  	      column{ "Menubar name" } 
+  	      column{ input(mb.key) }
+  	      column{ "" }
   	    }
-  	    listitem{
-  	      "Brand: " editMenuItem(mb.brand)
+  	    row{
+  	      column{ "Brand" } 
+  	      column{ editBrand(mb) }
+  	      column{ "" }
   	    }
   	    for(m: Menu in mb.menus) {
-  		    listitem{ editMenu(mb, m) }
+  		    row{ editMenu(mb, m) }
   		  }
   	  }
       submitlink addMenu() [class="btn"] { "Add Menu" } " "
@@ -181,22 +193,56 @@ section configure menubar
   	}
   }
   
+  define editBrand(mb: Menubar) {
+    if(mb.brand != null) { 
+      editMenuItem(mb.brand) " "
+      submitlink action{ mb.brand := null; } [class="btn"] { iRemove }
+    } else {
+      submitlink action{ mb.brand := newLink(); } [class="btn"] { "Link" }
+      submitlink action{ mb.brand := newWiki(); } [class="btn"] { "Wiki" }
+      submitlink action{ mb.brand := newBlog(); } [class="btn"] { "Blog" }
+    }
+  }
+  
   define editMenu(mb: Menubar, m: Menu) {
-  	input(m.name) " " 
-  	submitlink action{ mb.remove(m); } { iRemove }
-  	list{
-  		for(item: MenuItem in m.items) {
-  		  listitem{ 
-  		    editMenuItem(item) " "
-  		    submitlink action { m.remove(item); } [class="btn"] { iRemove }
-  		  }
-  		}
-  		listitem{
-  		  submitlink action{ m.addLink(); } [class="btn"] { "Add Link" } " "
-        submitlink action{ m.addWiki(); } [class="btn"] { "Add Wiki" } " "
-        submitlink action{ m.addBlog(); } [class="btn"] { "Add Blog" } " "
-  		}
+  	column{ 
+  	  if(m.items.length > 1) { 
+  	    input(m.name) 
+  	  } else { if(m.items.length == 1) {
+  	    output(m.items[0].name)
+  	  } }
   	}
+  	column{
+  	  editMenuItems(m)
+  	}
+    column{ 
+      submitlink action{ mb.remove(m); } [class="btn"] { iRemove }
+      submitlink action{ m.up(); } [class="btn"] { iArrowUp }
+      submitlink action{ m.down(); } [class="btn"] { iArrowDown }
+    }
+  }
+  
+  define editMenuItems(m: Menu) {
+    tableBordered{
+      for(item: MenuItem in m.items) {
+        row{ 
+          column{ editMenuItem(item) }
+          column{ 
+            submitlink action{ m.remove(item); } [class="btn"] { iRemove }             
+            submitlink action{ item.up(); } [class="btn"] { iArrowUp }
+            submitlink action{ item.down(); } [class="btn"] { iArrowDown }
+          }
+        }
+      }
+      row{
+        column{
+          submitlink action{ m.addLink(); } [class="btn"] { "Add Link" } " "
+          submitlink action{ m.addWiki(); } [class="btn"] { "Add Wiki" } " "
+          submitlink action{ m.addBlog(); } [class="btn"] { "Add Blog" } " "
+        }
+        column{ "" }
+      }
+    }
   }
   
   define editMenuItem(item: MenuItem) {

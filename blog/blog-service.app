@@ -9,7 +9,7 @@ section blog
       var obj := JSONObject();
       obj.put("id", id);
       obj.put("title", title);
-      obj.put("about", about);
+      //obj.put("about", about);
       obj.put("description", description);
       obj.put("modified", modified);
       return obj;

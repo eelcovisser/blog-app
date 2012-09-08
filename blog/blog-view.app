@@ -1,51 +1,31 @@
-module blog/blog-view
+module blog/blog-view  
 
 imports blog/blog-model
 imports layout/layout-view 
    
 access control rules
+
   rule template newBlog() { isAdministrator() }
-  rule template newPost(b: Blog) { b.mayPost() }
+  rule template newPost(b: Blog) { b.mayPost() }  
+  rule template blogAdminMenu(b: Blog) { isAdministrator() }
     
 section blog page layout  
 
   define bloglayout(b: Blog) {
-    init{ b.update(); }    
-    // define rssLink() {
-    //   <link rel="alternate" type="application/rss+xml" title="RSS" href=navigate(feed("blog"))></link> 
-    // }
+    define rssLink() {
+      <link rel="alternate" type="application/rss+xml" title="RSS" href=navigate(feed("blog"))></link> 
+    }
     mainResponsive{ 
-      blogNavbar(b)
+       navbar(b.menubar()){
+         navItem{ navigate index(1,"")  { "Articles" } }
+         navItem{ navigate feed("blog") { "Feed"     } }
+         blogAdminMenu(b)
+      }
       gridContainer{
         messages
         elements 
       }
-      footer{
-        gridContainer{
-          gridRow{ footerMenubar(b.footerMenu()) }
-          pagefooter
-          pullRight{ signinoff }
-        }
-      }
-    }
-  }
-  
-  define blogNavbar(b: Blog) {
-    var menubar := b.menubar
-    define brand() {
-      if(menubar.brand != null) {
-        navMenuItem(menubar.brand) [class="brand"]
-      } else {
-        navigate blog(0) [class="brand"]{ output(b.title) }
-      }
-    }
-    navbarResponsive{
-      navItems{
-        dropdownMenubar(menubar)
-        listitem{ navigate index(1,"")  { "Articles" } }
-        listitem{ navigate feed("blog") { "Feed"     } }
-        blogAdminMenu(b)
-      }
+      footer(b.footerMenu())
     }
   }
   
@@ -70,22 +50,7 @@ section blog page layout
   }
 
 section blog navigation
-  
-  // define blogSidebar(b: Blog) {
-  //     searchPosts(b)       
-  //     sidebarSection{
-  //       list{
-  //         listitem{ navigate about() { "About" } }
-  //         listitem{ navigate contact() { "Contact" } }
-  //         listitem{ navigate index(1,"") { "Index" } }
-  //         listitem{ navigate feed("blog") { "RSS" } }
-  //       }
-  //     }
-  //     showLinks(b)
-  //     recentPosts(b)
-  //     blogAdmin(b)
-  // }
-    
+ 
 //   define recentPosts(b: Blog) {
 //   	sidebarSection{ 
 //       <h2>"Recent Posts"</h2>
@@ -106,37 +71,38 @@ section blog navigation
   
 section links
 
-  define showLinks(b: Blog) {
-    <h2>"Links"</h2>
-    output(b.links)
-  }
+  // define showLinks(b: Blog) {
+  //   <h2>"Links"</h2>
+  //   output(b.links)
+  // }
   
-section about 
+// section about 
+// 
+//   define page about() {
+//     aboutBlog(mainBlog())
+//   }
+// 
+//   define aboutBlog(b: Blog) {
+//     title{ "About " output(b.title)}
+//     bloglayout(b){
+//       <h1>"About"</h1>
+//       output(b.about)
+//     }
+//   }
+//   
+//   define page contact() {
+//     contactBlog(mainBlog())
+//   }
+// 
+//   define contactBlog(b: Blog) {    
+//     title{ "Contact " output(b.title)}
+//     bloglayout(b){
+//       <h1>"Contact"</h1>
+//       output(b.contact)
+//     }
+//   }
 
-  define page about() {
-    aboutBlog(mainBlog())
-  }
 
-  define aboutBlog(b: Blog) {
-    title{ "About " output(b.title)}
-    bloglayout(b){
-      <h1>"About"</h1>
-      output(b.about)
-    }
-  }
-  
-  define page contact() {
-    contactBlog(mainBlog())
-  }
-
-  define contactBlog(b: Blog) {    
-    title{ "Contact " output(b.title)}
-    bloglayout(b){
-      <h1>"Contact"</h1>
-      output(b.contact)
-    }
-  }
-    
 section search
 
   define searchPosts(b: Blog) {
@@ -319,9 +285,9 @@ section blog admin
         controlGroup("Blog Title"){ input(b.title) }
         controlGroup("Blog Main"){ input(b.main) }
         controlGroup("Description"){ input(b.description) }
-        controlGroup("About"){ input(b.about) }
-        controlGroup("Contact"){ input(b.contact) }
-        controlGroup("Links"){ input(b.links) }
+        //controlGroup("About"){ input(b.about) }
+        //controlGroup("Contact"){ input(b.contact) }
+        //controlGroup("Links"){ input(b.links) }
         controlGroup("Authors"){ input(b.authors) }
         formActions{
           submitlink action { return other(b,1); } [class="btn btn-primary"] { "Save" } " "

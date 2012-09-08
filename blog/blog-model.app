@@ -9,18 +9,15 @@ section blog
 		title :: String (name, searchable) 
 		main  :: Bool (default=false)
 		
-		about   :: WikiText        
-		contact :: WikiText
-		links   :: WikiText
+		//about   :: WikiText        
+		//contact :: WikiText
+		//links   :: WikiText
 		description :: WikiText // for summaries, RSS
 		
 		authors -> Set<User>
 		
 		modified :: DateTime (default=now())
 		
-	  function update() {
-		  if(description == null) { description := ""; }
-		}
 		function modified() { 
 		  modified := now();
 		}

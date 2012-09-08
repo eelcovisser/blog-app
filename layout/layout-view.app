@@ -29,26 +29,21 @@ section main template
     includeJS("bootstrap/js/bootstrap.js")
     includeHead("<meta name='viewport' content='width=device-width, initial-scale=1.0'>")   
     //includeHead(rendertemplate(rssLink()))
-    //includeHead(rendertemplate(analytics))
+    includeHead(rendertemplate(analytics))
     //includeHead(rendertemplate(bitterfont))
     //<link href="http://fonts.googleapis.com/css?family=Bitter" rel="stylesheet" type="text/css">
     elements
   }
 
   define main() { 
-    navigationbar    
-    gridContainer[id="maincontainer"]{
-      messages
-      elements
-    }
-    //aselectWorkaround
-    footer{  
+    mainResponsive{ 
+      navbar(application.menubar())
       gridContainer{
-        pullRight{ signinoff }
-        pagefooter
+        messages
+        elements 
       }
+      footer(application.footerMenu())
     }
-    analytics
   }
   
   define brand() { 
@@ -63,53 +58,79 @@ section main template
       }
     }
   }
+  
+  define navbar(menubar: Menubar) {
+    define brand() {
+      if(menubar.brand != null) {
+        navMenuItem(menubar.brand) [class="brand"]
+      } 
+    }
+    navbarResponsive{
+      navItems{ 
+        dropdownMenubar(menubar)
+        elements
+      }
+    }
+  }
+  
+  define footer(menubar: Menubar) {
+      footer{
+        gridContainer{     
+          gridRow{ footerMenubar(menubar) }
+          gridRow{
+            gridSpan(8) { pagefooter }
+            gridSpan(4) { pullRight{ signinoff } }
+          }
+        }
+      }
+  }
 
 section old main
 
-  define mainOld() {
-    // http://www.google.com/webfonts
-    // sans serif
-    includeCSS("http://fonts.googleapis.com/css?family=Cabin+Sketch:bold")
-    // monospace
-    includeCSS("http://fonts.googleapis.com/css?family=Droid+Sans+Mono")
-    // sans serif
-    includeCSS("http://fonts.googleapis.com/css?family=Cabin")
-    
-    // sans serif
-    // includeCSS("http://fonts.googleapis.com/css?family=Expletus+Sans")
-    
-    // serif
-    // includeCSS("http://fonts.googleapis.com/css?family=Philosopher")
-    
-    // typewriter
-    // includeCSS("http://fonts.googleapis.com/css?family=Special+Elite")
-    // includeCSS("http://fonts.googleapis.com/css?family=Anonymous+Pro")
-    
-    // script
-    //includeCSS("http://fonts.googleapis.com/css?family=Walter+Turncoat")
-    
-    includeCSS("style.css")
-    includeHead(rendertemplate(rssLink()))
-    includeHead(rendertemplate(analytics))
-    <div id="pageheader">
-      <div id="pageheadercontent">
-        //pageheader
-      </div>
-    </div>
-    <div id="outercontainer">
-      <div id="container">
-        <div id="sidebar">sidebar</div>
-        <div id="contents">messages elements</div>
-        <div class="clear"> </div>
-      </div>
-      <div class="clear"> </div>
-    </div>
-    <div id="footercontainer">
-      <div id="footercontent">
-        <div id="footer">signinoff pagefooter</div>
-      </div>
-    </div>
-  }
+  // define mainOld() {
+  //   // http://www.google.com/webfonts
+  //   // sans serif
+  //   includeCSS("http://fonts.googleapis.com/css?family=Cabin+Sketch:bold")
+  //   // monospace
+  //   includeCSS("http://fonts.googleapis.com/css?family=Droid+Sans+Mono")
+  //   // sans serif
+  //   includeCSS("http://fonts.googleapis.com/css?family=Cabin")
+  //   
+  //   // sans serif
+  //   // includeCSS("http://fonts.googleapis.com/css?family=Expletus+Sans")
+  //   
+  //   // serif
+  //   // includeCSS("http://fonts.googleapis.com/css?family=Philosopher")
+  //   
+  //   // typewriter
+  //   // includeCSS("http://fonts.googleapis.com/css?family=Special+Elite")
+  //   // includeCSS("http://fonts.googleapis.com/css?family=Anonymous+Pro")
+  //   
+  //   // script
+  //   //includeCSS("http://fonts.googleapis.com/css?family=Walter+Turncoat")
+  //   
+  //   includeCSS("style.css")
+  //   includeHead(rendertemplate(rssLink()))
+  //   includeHead(rendertemplate(analytics))
+  //   <div id="pageheader">
+  //     <div id="pageheadercontent">
+  //       //pageheader
+  //     </div>
+  //   </div>
+  //   <div id="outercontainer">
+  //     <div id="container">
+  //       <div id="sidebar">sidebar</div>
+  //       <div id="contents">messages elements</div>
+  //       <div class="clear"> </div>
+  //     </div>
+  //     <div class="clear"> </div>
+  //   </div>
+  //   <div id="footercontainer">
+  //     <div id="footercontent">
+  //       <div id="footer">signinoff pagefooter</div>
+  //     </div>
+  //   </div>
+  // }
   
   define clear() { 
     <div class="clear" />
@@ -127,12 +148,12 @@ section old main
     output(application.footer)
   }
   
-  define sidebar() {
-    showWiki("sidebar")
-    if(loggedIn()){
-      showWiki("admin-sidebar")
-    }
-  }
+  // define sidebar() {
+  //   showWiki("sidebar")
+  //   if(loggedIn()){
+  //     showWiki("admin-sidebar")
+  //   }
+  // }
   
   define sidebarSection(){
     <div class="sidebarSection">
