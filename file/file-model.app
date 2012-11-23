@@ -35,8 +35,8 @@ section files
     description :: WikiText
     file        :: File
     authors     -> Set<User>
-    created     :: DateTime (default=now())
-    modified    :: DateTime (default=now())
+    //created     :: DateTime (default=now())
+    //modified    :: DateTime (default=now())
     public      :: Bool (default=true)
     function public(): Bool { return public; }
     function publish() { public := true; }

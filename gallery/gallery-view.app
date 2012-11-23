@@ -61,11 +61,13 @@ section photo page
   		submitlink resize() { "[Resize]" }
   		submitlink delete() { "[Delete]" }
   		navigate photoFullscreen(photo, "o", photo.filename()) { "[fullscreen]" }
+  		
+  		<img src=t />
   	}      
   } 
   
   define page photoFullscreen(photo: Photo, size: String, filename: String) {
-    mimetype("image/jpg")
+    //mimetype("image/jpg")
     init{ 
       case(size) { 
         "m" { photo.original.download(); }

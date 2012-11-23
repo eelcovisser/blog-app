@@ -11,8 +11,8 @@ section photos
     square      :: Image
     title       :: String
     description :: WikiText
-    created     :: DateTime (default=now())
-    modified    :: DateTime (default=now())
+    //created     :: DateTime (default=now())
+    //modified    :: DateTime (default=now())
     
     function init() { 
       if(thumbnail == null) { resize(); }

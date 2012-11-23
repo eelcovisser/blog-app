@@ -16,7 +16,7 @@ section blog
 		
 		authors -> Set<User>
 		
-		modified :: DateTime (default=now())
+		//modified :: DateTime (default=now())
 		
 		function modified() { 
 		  modified := now();
@@ -141,8 +141,8 @@ section posts
 		content     :: WikiText (searchable)
 		extended    :: WikiText (searchable)
 		public      :: Bool (default=false)
-		created     :: DateTime (default=now())
-		modified    :: DateTime (default=now())
+		//created     :: DateTime (default=now())
+		//modified    :: DateTime (default=now())
 		deleted     :: Bool (default=false)
 		authors     -> Set<User>
 		

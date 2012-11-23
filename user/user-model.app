@@ -64,7 +64,7 @@ section reset password
   
   entity ResetPassword {
     user    -> User
-    created :: DateTime (default=now())
+    //created :: DateTime (default=now())
   }
   
   define email resetPassword(r: ResetPassword) {
@@ -112,7 +112,7 @@ section registration
     user      -> User
     email     :: Email
     confirmed :: Bool (default=false)
-    created   :: DateTime
+    //created   :: DateTime
     previous  -> ConfirmEmail
     function confirm() { 
       confirmed := true;

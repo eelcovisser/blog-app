@@ -1,4 +1,4 @@
-all : rebuild deploy
+all : build deploy
 
 build : 
 	webdsl build

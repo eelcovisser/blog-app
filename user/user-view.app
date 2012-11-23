@@ -15,7 +15,7 @@ section user profile
  
 	page profile(u: User) {
 	  init{ 
-	    return root();
+	    //return root();
 	    // if(u.profileLink != null) { 
 	    //   return wiki(u.profileWiki.group.keyBase, u.profileWiki.keyBase, "");
 	    // }
