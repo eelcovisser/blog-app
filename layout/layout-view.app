@@ -62,7 +62,7 @@ section main template
   define navbar(menubar: Menubar) {
     define brand() {
       if(menubar.brand != null) {
-        navMenuItem(menubar.brand) [class="brand"]
+        navMenuItem(menubar.brand) [class="brand"] 
       } 
     }
     navbarResponsive{
@@ -173,7 +173,7 @@ section error messages
   
 section tracking
 
-  define analytics() {
+  template analytics() {
     var account := application.analyticsAccount
     if(application.analyticsOn != null && application.analyticsOn) {
 	    <script type="text/javascript">

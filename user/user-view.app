@@ -75,7 +75,7 @@ section authentication
 			        navigate register() [class="btn"] { "Sign Up" } " "
               navigate resetpassword() [class="btn"] { "Reset Password" }
             }
-          } 
+          }
 		    }
 		  }
 		}

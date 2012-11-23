@@ -109,12 +109,12 @@ section search
   define searchPosts(b: Blog) {
     var query: String
     action search() { if(query != "") { return search(b, query); } }
-    <div class="searchPosts">
+    div[class="searchPosts"]{
 	    form{
 	      input(query)
 	      submit search() { "Search" }
 	    }
-    </div>
+    }
   }
   
   define page search(b: Blog, query: String) {
@@ -218,7 +218,6 @@ section blog front page
       for(p: Post in b.recentPosts(index,5,isWriter(),false)) { postInList(p) }    
       pageIndex(index, count, perpage, 9, 1)
     } 
-    //postCommentCountScript
   }
   
   define newBlog() {
@@ -406,7 +405,6 @@ section post
     bloglayout(p.blog){
       placeholder view { postView(p) }
       postComments(p)
-      //postCommentCountScript
     }
   }
   

@@ -27,8 +27,8 @@ section groups
     key      :: String (id)
     keyBase  :: String (name)
     title    :: String (title)
-    created  :: DateTime (default=now())
-    modified :: DateTime (default=now())
+    // created  :: DateTime (default=now())
+    // modified :: DateTime (default=now())
         
     extend function setKeyBase(k: String) {
       key := k + ":";
@@ -74,8 +74,8 @@ section wiki pages
     content     :: WikiText (default= "", searchable)
     discussion  :: WikiText (default="", searchable)
     attachments -> Attachments
-    created     :: DateTime (default=now())
-    modified    :: DateTime (default=now())
+    // created     :: DateTime (default=now())
+    // modified    :: DateTime (default=now())
     public      :: Bool     (default=true)
     authors     -> Set<User> 
     

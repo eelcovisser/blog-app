@@ -179,7 +179,7 @@ section wiki
     init{
       if(f == null) { f := findCreateWiki("", ""); }
     }
-    title{ output(wikiTitle(key)) }
+    title{ output(if(w != null) w.title else key) " - " output(application.title) } 
     wikilayout(f){
       if(key == "index") {
         groupIndex(group)
@@ -235,6 +235,7 @@ section wiki
     gridRow{
       gridSpan(10,2){
         div[class="wikiContent"]{ output(w.content) }
+        clear
         byLine(w)
         wikiActions(w)
         attachments(w.attachments)
