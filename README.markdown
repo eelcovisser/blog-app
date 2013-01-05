@@ -1,4 +1,6 @@
-A blogging + wiki application written in WebDSL 
+blog
+====
+A blogging + wiki application written in WebDSL
 
 Author: Eelco Visser  
 Web: http://eelcovisser.org  
