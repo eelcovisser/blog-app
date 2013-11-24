@@ -195,16 +195,16 @@ section blog rss
 
 section blog front page
  
-  define page blog(index: Int) {
+  page blog(index: Int) {
     blog(mainBlog(), index)
   }
   
-  define page other(b: Blog, index: Int) {
+  page other(b: Blog, index: Int) {
   	init{ if(b.main) { goto blog(1); } }
     blog(b, index) 
   }
   
-  define blog(b: Blog,index: Int) {
+  template blog(b: Blog,index: Int) {
     var count := b.postCount(isWriter(), false)
     var perpage := 5
     init{
@@ -399,7 +399,7 @@ section post
     }
   }
 
-  define page post(p: Post, title: String) {
+  page post(p: Post, title: String) {
     init{ p.update(); }
     title{ output(p.title) }
     bloglayout(p.blog){

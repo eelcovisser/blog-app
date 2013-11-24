@@ -142,7 +142,7 @@ section old main
   //   </div>
   // }
   
-  define copyright() { rawoutput{ "&copyright;" } }
+  define copyright() { "copyright" } // rawoutput{ "&copyright;" } }
   
   define pagefooter() { 
     output(application.footer)
