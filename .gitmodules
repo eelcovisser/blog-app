@@ -1,0 +1,3 @@
+[submodule "elib"]
+	path = elib
+	url = git://github.com/webdsl/elib-legacy.git
