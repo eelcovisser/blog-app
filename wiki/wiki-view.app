@@ -184,7 +184,7 @@ section wiki
       if(key == "index") {
         groupIndex(group)
       } else {
-        placeholder view{
+        placeholder "view"{
           if(w == null || !w.mayView()) {
             unknownWiki(group, key)
           } else {
@@ -244,7 +244,7 @@ section wiki
   }
   
   ajax template showWikiDiscussion(w : Wiki) { 
-    action edit() { replace(view, editWikiDiscussion(w)); }
+    action edit() { replace("view", editWikiDiscussion(w)); }
     pageHeader{ output(w.title) " (Discussion)" }
     gridRow{
       gridSpan(10,2){ 
@@ -260,9 +260,9 @@ section wiki
   ajax template editWikiDiscussion(w: Wiki) {
     action save() { 
       w.modified();
-      replace(view, showWikiDiscussion(w)); 
+      replace("view", showWikiDiscussion(w)); 
     }
-    action cancel() { replace(view, showWikiDiscussion(w)); }
+    action cancel() { replace("view", showWikiDiscussion(w)); }
     pageHeader{ output(w.title) " (Discussion)" }
     form{
       input(w.discussion) [style="height:500px;"]
@@ -283,7 +283,7 @@ section wiki
       //replace(view, showWiki(w)); 
       return wiki(w.group.keyBase, w.keyBase, "");
     }
-    action cancel() { replace(view, showWiki(w)); }
+    action cancel() { replace("view", showWiki(w)); }
     pageHeader{ output(w.title) }
     horizontalForm{
       controlGroup("Key"){ input(w.keyBase) }
@@ -307,7 +307,7 @@ section wiki
   }
   
   template wikiActions(w: Wiki) {
-    action edit() { replace(view, editWiki(w)); }
+    action edit() { replace("view", editWiki(w)); }
     action publish() { w.show(); }
     action hide() { w.hide(); }
     span[class="wikiActions"]{
