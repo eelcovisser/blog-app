@@ -14,7 +14,7 @@ section main template
     includeCSS("bootstrap-extension.css")
     includeCSS("bootstrap/css/bootstrap.css")  
     includeCSS("bootstrap/css/bootstrap-adapt.css")
-    includeJS("jquery.js")
+    includeJS(IncludePaths.jQueryJS())
     includeJS("bootstrap/js/bootstrap.js")
     includeHead("<meta name='viewport' content='width=device-width, initial-scale=1.0'>") 
     elements
@@ -25,7 +25,7 @@ section main template
     includeCSS("bootstrap/css/bootstrap-responsive.css")   
     includeCSS("bootstrap/css/bootstrap-adapt.css")
     includeCSS("bootstrap-extension.css")
-    includeJS("jquery.js")
+    includeJS(IncludePaths.jQueryJS())
     includeJS("bootstrap/js/bootstrap.js")
     includeHead("<meta name='viewport' content='width=device-width, initial-scale=1.0'>")   
     //includeHead(rendertemplate(rssLink()))
@@ -46,7 +46,7 @@ section main template
     }
   }
   
-  define brand() { 
+  override template brand() { 
     navigate root() [class="brand"]{ "Blog" }
   }
   

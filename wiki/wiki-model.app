@@ -106,7 +106,7 @@ section wiki pages
       if(discussion == null) { discussion := ""; }
       if(keyBase == null) { keyBase := key; }
       if(group == null) { group := findCreateWikiGroup("home"); }
-      key := group.key + keyBase;
+      if(key != group.key + keyBase){ key := group.key + keyBase; }
     }
     
     function moveTo(newgroup: WikiGroup) {

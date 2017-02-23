@@ -221,7 +221,7 @@ section blog front page
   }
   
   define newBlog() {
-    var name: String;
+    var name: String
     action new() { newBlog(name); return blog(1); }
     form{ 
       input(name)
@@ -403,7 +403,7 @@ section post
     init{ p.update(); }
     title{ output(p.title) }
     bloglayout(p.blog){
-      placeholder view { postView(p) }
+      placeholder "view" { postView(p) }
       postComments(p)
     }
   }
@@ -418,7 +418,7 @@ section post
   }
 
   define ajax postEdit(p: Post) {
-    action save() { p.modified(); replace(view, postView(p)); }
+    action save() { p.modified(); replace("view", postView(p)); }
     pageHeader2{ output(p.title) }
     horizontalForm{
         controlGroup("Title") { 
@@ -444,7 +444,7 @@ section post
   }
 
   define postActions(p: Post) {    
-  	action edit() { replace(view, postEdit(p)); }
+  	action edit() { replace("view", postEdit(p)); }
     action remove() { var b := p.blog; if(p.remove()) { return other(b,1); } }
     action withdraw() { p.withdraw(); }
     action publish() { p.publish(); }
@@ -478,7 +478,7 @@ section comments
 
   define postComments(p: Post) {
     var url := plainLink(p)
-    var id := p.id
+    var idpost := p.id
     var forum := application.disqusForumId
     if(p.publicComments()) {
 	    <div id="disqus_thread"></div>
@@ -487,7 +487,7 @@ section comments
 		    var disqus_shortname = '~forum'; // required: replace example with your forum shortname
 		
 		    // The following are highly recommended additional parameters. Remove the slashes in front to use.
-		    var disqus_identifier = '~id';
+		    var disqus_identifier = '~idpost';
 		    var disqus_url = '~url';
 		
 		    /* * * DON'T EDIT BELOW THIS LINE * * */
